@@ -118,7 +118,8 @@ if (-not $SkipGithubRelease) {
     }
 }
 
-$updatedText = $gradleText -replace 'versionName\s*=\s*"[^"]+"', "versionName = \"$Version\""
+$versionNameReplacement = 'versionName = "' + $Version + '"'
+$updatedText = $gradleText -replace 'versionName\s*=\s*"[^"]+"', $versionNameReplacement
 $updatedText = $updatedText -replace 'versionCode\s*=\s*\d+', "versionCode = $nextVersionCode"
 Set-Content -LiteralPath $gradleFile -Value $updatedText -NoNewline -Encoding utf8
 
