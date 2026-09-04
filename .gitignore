@@ -1,0 +1,13 @@
+.gradle/
+build/
+app/build/
+local.properties
+.gradle-dist/
+gradle-*-bin.zip
+*.jks
+*.keystore
+signing.properties
+keystore.properties
+.secrets/
+.datapeek/
+release/

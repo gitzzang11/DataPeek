@@ -1,0 +1,60 @@
+{
+  "data": {
+    "VOICE": [
+      {
+        "total": "300",
+        "totalText": "300분",
+        "use": "10",
+        "useText": "10분",
+        "remain": "290",
+        "remainText": "290분",
+        "remainRate": "96.7",
+        "totalFee": "0",
+        "ratePrice": "0",
+        "planPrice": "0",
+        "dataType": "VOICE",
+        "qoS": "",
+        "dailyServ": ""
+      }
+    ],
+    "DATA": [
+      {
+        "total": "20971520",
+        "totalText": "20G",
+        "use": "315733",
+        "useText": "308M 341K",
+        "remain": "20655787",
+        "remainText": "19G 715M",
+        "remainRate": "1",
+        "totalFee": "0",
+        "ratePrice": "0",
+        "planPrice": "0",
+        "dataType": "DATA_BASIC_1",
+        "qoS": null,
+        "dailyServ": ""
+      }
+    ],
+    "SMS": [
+      {
+        "total": "100",
+        "totalText": "100건",
+        "use": "2",
+        "useText": "2건",
+        "remain": "98",
+        "remainText": "98건",
+        "remainRate": "98"
+      }
+    ],
+    "DETAIL": {
+      "jsonResult": [
+        {},
+        {},
+        {}
+      ]
+    },
+    "usageType": "monthly",
+    "useDay": "1"
+  },
+  "usageType": "monthly",
+  "useDay": "1"
+}
