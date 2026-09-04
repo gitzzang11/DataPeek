@@ -71,7 +71,8 @@ if (-not $currentNameMatch.Success -or -not $currentCodeMatch.Success) {
 }
 $currentVersion = $currentNameMatch.Groups[1].Value
 $currentVersionCode = [int]$currentCodeMatch.Groups[1].Value
-if (Compare-Version (Parse-Version $Version) (Parse-Version $currentVersion) -le 0) {
+$versionComparison = Compare-Version (Parse-Version $Version) (Parse-Version $currentVersion)
+if ($versionComparison -le 0) {
     throw "Version $Version must be greater than current version $currentVersion."
 }
 $nextVersionCode = $currentVersionCode + 1
