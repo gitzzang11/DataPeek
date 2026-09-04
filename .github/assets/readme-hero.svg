@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title description">
+  <title id="title">DataPeek</title>
+  <desc id="description">A polished preview of the DataPeek Android data usage app and widget.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B1020"/>
+      <stop offset="0.55" stop-color="#151D3B"/>
+      <stop offset="1" stop-color="#202B59"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#9DB5FF"/>
+      <stop offset="1" stop-color="#6688FF"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#02040C" flood-opacity="0.38"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="360" rx="32" fill="url(#background)"/>
+  <circle cx="102" cy="72" r="160" fill="#6487FF" opacity="0.08"/>
+  <circle cx="1130" cy="322" r="210" fill="#9DB5FF" opacity="0.06"/>
+
+  <g transform="translate(76 68)">
+    <circle cx="34" cy="34" r="34" fill="#385DCC"/>
+    <rect x="18" y="39" width="8" height="13" rx="2" fill="#FFFFFF"/>
+    <rect x="30" y="29" width="8" height="23" rx="2" fill="#FFFFFF"/>
+    <rect x="42" y="17" width="8" height="35" rx="2" fill="#FFFFFF"/>
+  </g>
+
+  <text x="76" y="186" fill="#FFFFFF" font-family="Inter, Pretendard, system-ui, sans-serif" font-size="62" font-weight="750" letter-spacing="-1">DataPeek</text>
+  <text x="78" y="228" fill="#D8DFEA" font-family="Inter, Pretendard, system-ui, sans-serif" font-size="21">남은 데이터를 앱과 홈 화면에서 한눈에</text>
+
+  <g font-family="Inter, Pretendard, system-ui, sans-serif" font-size="14" font-weight="600">
+    <rect x="76" y="264" width="128" height="36" rx="18" fill="#FFFFFF" opacity="0.10"/>
+    <text x="140" y="287" fill="#EEF2FF" text-anchor="middle">Android</text>
+    <rect x="216" y="264" width="142" height="36" rx="18" fill="#FFFFFF" opacity="0.10"/>
+    <text x="287" y="287" fill="#EEF2FF" text-anchor="middle">Jetpack Compose</text>
+    <rect x="370" y="264" width="132" height="36" rx="18" fill="#FFFFFF" opacity="0.10"/>
+    <text x="436" y="287" fill="#EEF2FF" text-anchor="middle">Glance Widget</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="730" y="44" width="386" height="272" rx="34" fill="#161A22" stroke="#FFFFFF" stroke-opacity="0.10"/>
+    <text x="774" y="84" fill="#D8DFEA" font-family="Inter, Pretendard, system-ui, sans-serif" font-size="15" font-weight="600">프리티 · SKT망</text>
+    <path d="M 824 238.7 A 104 104 0 1 1 971.1 238.7" fill="none" stroke="#687386" stroke-width="22" stroke-linecap="round"/>
+    <path d="M 824 238.7 A 104 104 0 1 1 971.1 238.7" fill="none" stroke="url(#accent)" stroke-width="22" stroke-linecap="round" pathLength="100" stroke-dasharray="98 100"/>
+    <text x="897.5" y="178" fill="#FFFFFF" font-family="Inter, Pretendard, system-ui, sans-serif" font-size="32" font-weight="750" text-anchor="middle">19.7 GB</text>
+    <text x="897.5" y="204" fill="#D8DFEA" font-family="Inter, Pretendard, system-ui, sans-serif" font-size="15" text-anchor="middle">98% 남음</text>
+    <line x1="1018" y1="104" x2="1018" y2="258" stroke="#FFFFFF" stroke-opacity="0.10"/>
+    <text x="1043" y="132" fill="#98A3B7" font-family="Inter, Pretendard, system-ui, sans-serif" font-size="12">사용</text>
+    <text x="1043" y="154" fill="#FFFFFF" font-family="Inter, Pretendard, system-ui, sans-serif" font-size="16" font-weight="650">308 MB</text>
+    <text x="1043" y="198" fill="#98A3B7" font-family="Inter, Pretendard, system-ui, sans-serif" font-size="12">전체</text>
+    <text x="1043" y="220" fill="#FFFFFF" font-family="Inter, Pretendard, system-ui, sans-serif" font-size="16" font-weight="650">20 GB</text>
+    <text x="1043" y="267" fill="#9DB5FF" font-family="Inter, Pretendard, system-ui, sans-serif" font-size="13" font-weight="650">방금 업데이트</text>
+  </g>
+</svg>
