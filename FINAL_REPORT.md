@@ -1311,3 +1311,34 @@ DataPeek MainActivity에는 `NavHost`/`NavController`가 없고, 기존 Compose 
 - APK size: 21,189,734 bytes
 - APK SHA-256: `B36D693CAB238664B894526D0A5EDD201A6B0C1F0F8897748E9F6019339DC985`
 - Galaxy background E2E (app closed, scheduled time elapsed, Widget value changed): NOT TESTED
+
+## DataPeek 1.0.0 Release
+
+- GitHub account: `gitzzang11`
+- Repository: https://github.com/gitzzang11/DataPeek
+- Visibility: `PUBLIC`
+- Release version: `1.0.0`
+- Version code: `1`
+- Release signing: `PASS`
+- Signing key: `C:\Users\User\.datapeek\signing\datapeek-release.jks` (`LOCAL ONLY / NOT COMMITTED`)
+- Signing key committed: `NO`
+- Certificate SHA-256: `14:40:50:8A:89:0D:B6:15:9D:EA:88:36:4B:36:87:35:67:7D:16:3D:6D:82:D4:73:16:4B:86:49:B1:57:51:E6`
+- Release APK: `C:\src\DataPeek\app\build\outputs\apk\release\app-release.apk`
+- Release asset: `C:\src\DataPeek\release\DataPeek-1.0.0.apk`
+- APK SHA-256: `4271887416EDA9FF6ABCFECC92B2796025239EEADD1625D5D1ABFE07F636FF32`
+- `gradlew.bat clean`: `PASS`
+- `gradlew.bat test`: `PASS`
+- `gradlew.bat lint`: `PASS` — 0 errors
+- `gradlew.bat assembleDebug`: `PASS`
+- `gradlew.bat assembleRelease`: `PASS`
+- `apksigner verify --verbose --print-certs`: `PASS` — RSA 4096, APK Signature Scheme v2
+- Signing backup: `PASS`
+- Backup key: `C:\Users\User\.datapeek\backup\datapeek-release-20260904-180520\datapeek-release.jks`
+- Primary/backup JKS SHA-256: `MATCH`
+- Certificate fingerprint primary/backup: `MATCH`
+- Release automation: `IMPLEMENTED` — `scripts/release.ps1`
+- Backup automation: `IMPLEMENTED` — `scripts/backup-signing-key.ps1`
+- Future release dry-run: `PASS` — `1.0.1`, next versionCode `2`
+- GitHub Actions CI: `IMPLEMENTED` — test, lint, assembleDebug only; no release secrets
+- Secrets scan: `PASS` — no hardcoded credentials or personal phone/email values; sanitization test uses synthetic placeholders only
+- Remaining limitations: Galaxy runtime E2E was not part of this release operation. Release builds require the local signing key. A release-signed APK cannot normally overwrite an existing debug-signed install with the same applicationId; do not uninstall the debug app without accepting its data/widget/login loss.
