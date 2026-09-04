@@ -1342,3 +1342,14 @@ DataPeek MainActivity에는 `NavHost`/`NavController`가 없고, 기존 Compose 
 - GitHub Actions CI: `IMPLEMENTED` — test, lint, assembleDebug only; no release secrets
 - Secrets scan: `PASS` — no hardcoded credentials or personal phone/email values; sanitization test uses synthetic placeholders only
 - Remaining limitations: Galaxy runtime E2E was not part of this release operation. Release builds require the local signing key. A release-signed APK cannot normally overwrite an existing debug-signed install with the same applicationId; do not uninstall the debug app without accepting its data/widget/login loss.
+
+### Publication verification
+
+- Source push: `PASS`
+- GitHub repository: `PUBLIC` — https://github.com/gitzzang11/DataPeek
+- Tag `v1.0.0`: `PASS`
+- GitHub Release: `PASS` — https://github.com/gitzzang11/DataPeek/releases/tag/v1.0.0
+- Release asset: `DataPeek-1.0.0.apk` only
+- Published asset hash vs local hash: `MATCH`
+- Public repository URL HTTP: `200`
+- Public release URL HTTP: `200`
