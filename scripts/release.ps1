@@ -113,8 +113,8 @@ if (-not $SkipPush) {
     }
 }
 if (-not $SkipGithubRelease) {
-    & gh release view $tag --repo $Repository *> $null
-    if ($LASTEXITCODE -eq 0) {
+    $existingReleases = @(gh release list --repo $Repository --json tagName | ConvertFrom-Json)
+    if ($existingReleases.tagName -contains $tag) {
         throw "GitHub Release already exists: $tag"
     }
 }
@@ -156,7 +156,9 @@ Copy-Item -LiteralPath $apkPath -Destination $assetPath -Force
 $notesPath = Join-Path ([IO.Path]::GetTempPath()) ("datapeek-release-notes-" + [Guid]::NewGuid().ToString('N') + '.md')
 try {
     if ($NotesFile) {
-        Copy-Item -LiteralPath $NotesFile -Destination $notesPath -Force
+        $notesContent = Get-Content -Raw -LiteralPath $NotesFile
+        $notesContent = $notesContent.Replace('{VERSION}', $Version).Replace('{APK_SHA256}', $hash)
+        Set-Content -LiteralPath $notesPath -Value $notesContent -NoNewline -Encoding utf8
     } else {
         $template = Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'release-notes-template.md')
         $template = $template.Replace('{VERSION}', $Version).Replace('{APK_SHA256}', $hash)
