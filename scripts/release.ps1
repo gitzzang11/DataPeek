@@ -155,14 +155,15 @@ Copy-Item -LiteralPath $apkPath -Destination $assetPath -Force
 
 $notesPath = Join-Path ([IO.Path]::GetTempPath()) ("datapeek-release-notes-" + [Guid]::NewGuid().ToString('N') + '.md')
 try {
+    $utf8NoBom = [System.Text.UTF8Encoding]::new($false)
     if ($NotesFile) {
-        $notesContent = Get-Content -Raw -LiteralPath $NotesFile
+        $notesContent = Get-Content -Raw -Encoding utf8 -LiteralPath $NotesFile
         $notesContent = $notesContent.Replace('{VERSION}', $Version).Replace('{APK_SHA256}', $hash)
-        Set-Content -LiteralPath $notesPath -Value $notesContent -NoNewline -Encoding utf8
+        [System.IO.File]::WriteAllText($notesPath, $notesContent, $utf8NoBom)
     } else {
-        $template = Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'release-notes-template.md')
+        $template = Get-Content -Raw -Encoding utf8 -LiteralPath (Join-Path $PSScriptRoot 'release-notes-template.md')
         $template = $template.Replace('{VERSION}', $Version).Replace('{APK_SHA256}', $hash)
-        Set-Content -LiteralPath $notesPath -Value $template -NoNewline -Encoding utf8
+        [System.IO.File]::WriteAllText($notesPath, $template, $utf8NoBom)
     }
 
     git add -- app/build.gradle.kts
