@@ -391,10 +391,11 @@ private fun GaugeContent(
     val plan = layoutPlan.contentPlan
     val type = layoutPlan.typography
     val remaining = widgetDisplayValue(snapshot.remainingBytes, snapshot.remainingUnit, layoutPlan)
+    val centerText = gaugeCenterTextPlan(percent, layoutPlan.gaugeDiameterDp, layoutPlan.sizeClass)
     when {
         layoutPlan.kind == WidgetLayoutKind.MICRO -> Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            GaugeVisual(percent, palette, layoutPlan.gaugeWidthDp, layoutPlan.gaugeHeightDp, centerLabel = null)
-            Text(remaining, style = widgetTextStyle(palette.primaryText, type.remainingSp, bold = true), maxLines = 1)
+            GaugeVisual(percent, palette, layoutPlan.gaugeWidthDp, layoutPlan.gaugeHeightDp, centerText)
+            Text(remaining, style = widgetTextStyle(palette.primaryText, type.metricSp, bold = true), maxLines = 1)
             if (widgetRequiresLogin(lastError)) {
                 Text("로그인 필요", style = widgetTextStyle(palette.secondaryText, 8), maxLines = 1)
             }
@@ -408,11 +409,11 @@ private fun GaugeContent(
                 palette,
                 layoutPlan.gaugeWidthDp,
                 layoutPlan.gaugeHeightDp,
-                centerLabel = if (plan.showPercent) formatWidgetPercent(percent) else null,
+                centerText,
             )
             Spacer(GlanceModifier.width(type.itemSpacingDp.dp))
             if (layoutPlan.heightClass == WidgetHeightClass.H1) {
-                WideShortGaugeMetrics(snapshot, lastError, isRefreshing, layoutPlan, palette, percent)
+                WideShortGaugeMetrics(snapshot, lastError, isRefreshing, layoutPlan, palette)
             } else {
                 Column {
                     Text("남음", style = widgetTextStyle(palette.secondaryText, type.titleSp), maxLines = 1)
@@ -429,7 +430,7 @@ private fun GaugeContent(
                 palette,
                 layoutPlan.gaugeWidthDp,
                 layoutPlan.gaugeHeightDp,
-                centerLabel = if (plan.showPercent) formatWidgetPercent(percent) else null,
+                centerText,
             )
             Text(remaining, style = widgetTextStyle(palette.primaryText, type.remainingSp, bold = true), maxLines = 1)
             if (plan.showUsed || plan.showTotal) {
@@ -455,7 +456,6 @@ private fun WideShortGaugeMetrics(
     isRefreshing: Boolean,
     layoutPlan: WidgetLayoutPlan,
     palette: WidgetPalette,
-    percent: Float,
 ) {
     val plan = layoutPlan.contentPlan
     val type = layoutPlan.typography
@@ -488,10 +488,6 @@ private fun WideShortGaugeMetrics(
                 Spacer(GlanceModifier.width(type.itemSpacingDp.dp))
                 MetricText("전체", widgetDisplayValue(snapshot.totalBytes, snapshot.totalUnit, layoutPlan), palette, type.tertiarySp)
             }
-            if (plan.showPercent) {
-                Spacer(GlanceModifier.width(type.itemSpacingDp.dp))
-                Text(formatWidgetPercent(percent), style = widgetTextStyle(palette.secondaryText, type.tertiarySp), maxLines = 1)
-            }
             if (plan.showUpdated) {
                 Spacer(GlanceModifier.width(type.itemSpacingDp.dp))
                 Text(
@@ -514,7 +510,7 @@ private fun GaugeVisual(
     palette: WidgetPalette,
     widthDp: Int,
     heightDp: Int,
-    centerLabel: String?,
+    centerText: GaugeCenterTextPlan,
 ) {
     val context = LocalContext.current
     val density = context.resources.displayMetrics.density
@@ -535,13 +531,11 @@ private fun GaugeVisual(
             modifier = GlanceModifier.fillMaxSize(),
             contentScale = ContentScale.Fit,
         )
-        centerLabel?.let {
-            Text(
-                it,
-                style = widgetTextStyle(palette.primaryText, (widthDp / 6).coerceIn(10, 22), bold = true),
-                maxLines = 1,
-            )
-        }
+        Text(
+            centerText.label,
+            style = widgetTextStyle(palette.primaryText, centerText.fontSizeSp, bold = true),
+            maxLines = 1,
+        )
     }
 }
 

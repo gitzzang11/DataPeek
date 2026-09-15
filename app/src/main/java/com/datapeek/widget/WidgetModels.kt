@@ -106,7 +106,7 @@ fun widgetContentPlan(
         showGauge = style == WidgetStyle.GAUGE,
         showUsed = false,
         showTotal = false,
-        showPercent = false,
+        showPercent = style == WidgetStyle.GAUGE,
         showUpdated = false,
         showReset = false,
         showStatus = false,
@@ -119,7 +119,7 @@ fun widgetContentPlan(
         showGauge = style == WidgetStyle.GAUGE,
         showUsed = true,
         showTotal = false,
-        showPercent = false,
+        showPercent = style == WidgetStyle.GAUGE,
         showUpdated = false,
         showReset = false,
         showStatus = false,
@@ -261,7 +261,7 @@ fun widgetLayoutPlan(
         WidgetLayoutKind.MICRO -> baseline.copy(
             showUsed = false,
             showTotal = false,
-            showPercent = false,
+            showPercent = style == WidgetStyle.GAUGE,
             showUpdated = false,
             showReset = false,
             showStatus = false,
@@ -272,7 +272,7 @@ fun widgetLayoutPlan(
         WidgetLayoutKind.COMPACT_WIDE_DASHBOARD -> baseline.copy(
             showUsed = true,
             showTotal = true,
-            showPercent = false,
+            showPercent = style == WidgetStyle.GAUGE,
             showUpdated = false,
             showReset = false,
             showStatus = false,
@@ -283,7 +283,7 @@ fun widgetLayoutPlan(
         WidgetLayoutKind.WIDE_DASHBOARD -> baseline.copy(
             showUsed = true,
             showTotal = widthClass.ordinal >= WidgetWidthClass.W3.ordinal,
-            showPercent = widthClass.ordinal >= WidgetWidthClass.W4.ordinal ||
+            showPercent = style == WidgetStyle.GAUGE || widthClass.ordinal >= WidgetWidthClass.W4.ordinal ||
                 (widthClass.ordinal >= WidgetWidthClass.W3.ordinal && heightClass.ordinal >= WidgetHeightClass.H2.ordinal),
             showUpdated = config.showUpdated && (
                 widthClass.ordinal >= WidgetWidthClass.W4.ordinal ||
@@ -301,7 +301,7 @@ fun widgetLayoutPlan(
         WidgetLayoutKind.TALL_DASHBOARD -> baseline.copy(
             showUsed = true,
             showTotal = heightClass.ordinal >= WidgetHeightClass.H2.ordinal,
-            showPercent = heightClass.ordinal >= WidgetHeightClass.H3.ordinal,
+            showPercent = style == WidgetStyle.GAUGE || heightClass.ordinal >= WidgetHeightClass.H3.ordinal,
             showUpdated = config.showUpdated && heightClass.ordinal >= WidgetHeightClass.H3.ordinal,
             showReset = heightClass.ordinal >= WidgetHeightClass.H5.ordinal,
             showStatus = heightClass.ordinal >= WidgetHeightClass.H4.ordinal,
@@ -312,8 +312,10 @@ fun widgetLayoutPlan(
         WidgetLayoutKind.COMPACT_DETAIL -> baseline.copy(
             showUsed = true,
             showTotal = true,
-            showPercent = widthClass.ordinal >= WidgetWidthClass.W2.ordinal &&
-                heightClass.ordinal >= WidgetHeightClass.H2.ordinal,
+            showPercent = style == WidgetStyle.GAUGE || (
+                widthClass.ordinal >= WidgetWidthClass.W2.ordinal &&
+                    heightClass.ordinal >= WidgetHeightClass.H2.ordinal
+                ),
             showUpdated = config.showUpdated && heightClass.ordinal >= WidgetHeightClass.H2.ordinal,
             showReset = false,
             showStatus = false,

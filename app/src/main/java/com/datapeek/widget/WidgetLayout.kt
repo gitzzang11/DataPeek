@@ -3,6 +3,7 @@ package com.datapeek.widget
 import com.datapeek.data.util.DataUnit
 import com.datapeek.data.util.formatBytes
 import kotlin.math.min
+import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 internal const val GAUGE_OPEN_RING_START_ANGLE_DEGREES = 135f
@@ -76,4 +77,37 @@ internal fun gaugeProgressSweepDegrees(remainingFraction: Float): Float =
 internal fun calculateGaugeRemainingFraction(remainingBytes: Long?, totalBytes: Long?): Float {
     if (remainingBytes == null || totalBytes == null || remainingBytes <= 0L || totalBytes <= 0L) return 0f
     return (remainingBytes.toDouble() / totalBytes.toDouble()).coerceIn(0.0, 1.0).toFloat()
+}
+
+internal data class GaugeCenterTextPlan(
+    val label: String,
+    val fontSizeSp: Int,
+)
+
+internal fun gaugeCenterTextPlan(
+    remainingPercent: Float,
+    gaugeDiameterDp: Int,
+    sizeClass: WidgetSizeClass,
+): GaugeCenterTextPlan {
+    val safePercent = remainingPercent.takeIf { it.isFinite() }?.coerceIn(0f, 100f) ?: 0f
+    val label = "${safePercent.roundToInt()}%"
+    val (preferredMinimum, maximum, readableMinimum) = when (sizeClass) {
+        WidgetSizeClass.MICRO -> Triple(15, 17, 12)
+        WidgetSizeClass.SMALL -> Triple(17, 20, 14)
+        WidgetSizeClass.MEDIUM -> Triple(19, 23, 16)
+        WidgetSizeClass.LARGE -> Triple(22, 27, 18)
+        WidgetSizeClass.XLARGE -> Triple(24, 30, 20)
+    }
+    val proportionalSize = (gaugeDiameterDp.coerceAtLeast(1) * 0.30f)
+        .roundToInt()
+        .coerceIn(preferredMinimum, maximum)
+    val widthAdjustment = when (label.length) {
+        4 -> 2
+        3 -> 1
+        else -> 0
+    }
+    return GaugeCenterTextPlan(
+        label = label,
+        fontSizeSp = (proportionalSize - widthAdjustment).coerceAtLeast(readableMinimum),
+    )
 }

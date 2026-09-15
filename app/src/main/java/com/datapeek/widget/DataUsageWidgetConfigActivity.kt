@@ -51,7 +51,6 @@ import androidx.glance.appwidget.GlanceAppWidgetManager
 import com.datapeek.data.model.Carrier
 import com.datapeek.data.model.UsageSnapshot
 import com.datapeek.data.model.UsageSource
-import com.datapeek.data.util.calculateRemainingPercent
 import com.datapeek.data.util.formatBytes
 import kotlinx.coroutines.launch
 import java.time.Instant
@@ -292,6 +291,7 @@ private fun WidgetPreview(config: WidgetConfig) {
                             visualConfig = visualConfig,
                             widthDp = plan.gaugeWidthDp,
                             heightDp = plan.gaugeHeightDp,
+                            sizeClass = plan.sizeClass,
                         )
                     }
                     Column(modifier = Modifier.padding(start = if (config.style == WidgetStyle.GAUGE) 8.dp else 0.dp)) {
@@ -323,8 +323,10 @@ private fun PreviewGauge(
     visualConfig: WidgetVisualConfig,
     widthDp: Int,
     heightDp: Int,
+    sizeClass: WidgetSizeClass,
 ) {
-    val percent = calculateRemainingPercent(snapshot.remainingBytes, snapshot.totalBytes) ?: 0f
+    val percent = calculateGaugeRemainingFraction(snapshot.remainingBytes, snapshot.totalBytes) * 100f
+    val centerText = gaugeCenterTextPlan(percent, widthDp, sizeClass)
     val trackColor = androidx.compose.ui.graphics.Color(visualConfig.gaugeTrackArgb)
     val progressColor = androidx.compose.ui.graphics.Color(visualConfig.gaugeProgressArgb)
     Box(modifier = Modifier.size(width = widthDp.dp, height = heightDp.dp)) {
@@ -361,9 +363,9 @@ private fun PreviewGauge(
             )
         }
         Text(
-            formatWidgetPercent(percent),
+            centerText.label,
             modifier = Modifier.align(Alignment.Center),
-            style = MaterialTheme.typography.labelMedium,
+            fontSize = centerText.fontSizeSp.sp,
             fontWeight = FontWeight.Bold,
             color = androidx.compose.ui.graphics.Color(visualConfig.primaryTextArgb),
         )
