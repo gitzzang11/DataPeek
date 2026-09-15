@@ -103,7 +103,7 @@ if ($DryRun) {
     exit 0
 }
 
-if ((git tag --list $tag).Trim()) {
+if (@(git tag --list $tag).Count -ne 0) {
     throw "Local tag already exists: $tag"
 }
 if (-not $SkipPush) {
