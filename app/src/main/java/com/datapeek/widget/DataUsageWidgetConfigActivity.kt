@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,29 +16,27 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.toggleable
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.layout.heightIn
+import com.datapeek.ui.DataPeekTheme
+import com.datapeek.ui.OneUiScreen
+import com.datapeek.ui.OneUiBottomAction
+import com.datapeek.ui.OneUiSectionTitle
+import com.datapeek.ui.OneUiGroup
+import com.datapeek.ui.OneUiDivider
+import com.datapeek.ui.OneUiSwitchRow
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
@@ -61,6 +60,7 @@ class DataUsageWidgetConfigActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         appWidgetId = intent.getIntExtra(
             AppWidgetManager.EXTRA_APPWIDGET_ID,
             AppWidgetManager.INVALID_APPWIDGET_ID,
@@ -97,149 +97,84 @@ class DataUsageWidgetConfigActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun WidgetConfigScreen(
     initialConfig: WidgetConfig,
     onCancel: () -> Unit,
     onSave: (WidgetConfig) -> Unit,
 ) {
-    var config by remember { mutableStateOf(initialConfig) }
-    val colorScheme = if (androidx.compose.foundation.isSystemInDarkTheme()) {
-        darkColorScheme()
-    } else {
-        lightColorScheme()
-    }
-    MaterialTheme(colorScheme = colorScheme) {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text("위젯 설정") },
-                    navigationIcon = { TextButton(onClick = onCancel) { Text("취소") } },
-                )
-            },
-        ) { contentPadding ->
-            Column(
-                modifier = Modifier
-                    .padding(contentPadding)
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 20.dp, vertical = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                Text("스타일", style = MaterialTheme.typography.titleMedium)
-                WidgetOptionRow(
-                    label = "정보형",
-                    supporting = "잔여량과 사용량을 한눈에 표시",
-                    selected = config.style == WidgetStyle.INFO,
-                    onClick = { config = config.copy(style = WidgetStyle.INFO) },
-                )
-                WidgetOptionRow(
-                    label = "게이지형",
-                    supporting = "반원 게이지와 잔여량을 표시",
-                    selected = config.style == WidgetStyle.GAUGE,
-                    onClick = { config = config.copy(style = WidgetStyle.GAUGE) },
-                )
-
-                HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
-                Text("글자/게이지 색상", style = MaterialTheme.typography.titleMedium)
-                WidgetOptionRow(
-                    label = widgetThemeLabel(WidgetTheme.SYSTEM),
-                    selected = config.theme == WidgetTheme.SYSTEM,
-                    onClick = { config = config.copy(theme = WidgetTheme.SYSTEM) },
-                )
-                WidgetOptionRow(
-                    label = widgetThemeLabel(WidgetTheme.LIGHT_FOREGROUND),
-                    selected = config.theme == WidgetTheme.LIGHT_FOREGROUND,
-                    onClick = { config = config.copy(theme = WidgetTheme.LIGHT_FOREGROUND) },
-                )
-                WidgetOptionRow(
-                    label = widgetThemeLabel(WidgetTheme.DARK_FOREGROUND),
-                    selected = config.theme == WidgetTheme.DARK_FOREGROUND,
-                    onClick = { config = config.copy(theme = WidgetTheme.DARK_FOREGROUND) },
-                )
-
-                HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
-                Text("배경", style = MaterialTheme.typography.titleMedium)
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Checkbox(
-                        checked = config.backgroundEnabled,
-                        onCheckedChange = { enabled -> config = config.copy(backgroundEnabled = enabled) },
-                    )
-                    Text("위젯 배경 사용")
+    var config by rememberSaveable(stateSaver = androidx.compose.runtime.saveable.listSaver(
+        save = { listOf(it.style.name, it.theme.name, it.backgroundEnabled, it.opacityPercent, it.showRefresh, it.showUpdated) },
+        restore = { WidgetConfig(WidgetStyle.valueOf(it[0] as String), WidgetTheme.valueOf(it[1] as String),
+            it[2] as Boolean, it[3] as Int, it[4] as Boolean, it[5] as Boolean) },
+    )) { mutableStateOf(initialConfig) }
+    DataPeekTheme {
+        OneUiScreen("위젯 설정", onBack = onCancel,
+            bottomBar = { OneUiBottomAction("저장", onClick = { onSave(config) }) },
+        ) {
+            WidgetPreview(config)
+            OneUiSectionTitle("스타일")
+            OneUiGroup {
+                Column(Modifier.selectableGroup()) {
+                    WidgetOptionRow("정보형", "잔여량과 사용량을 한눈에", config.style == WidgetStyle.INFO) {
+                        config = config.copy(style = WidgetStyle.INFO)
+                    }
+                    OneUiDivider()
+                    WidgetOptionRow("게이지형", "열린 원형 게이지로 잔여량 표시", config.style == WidgetStyle.GAUGE) {
+                        config = config.copy(style = WidgetStyle.GAUGE)
+                    }
                 }
+            }
+            OneUiSectionTitle("글자 및 게이지 색상")
+            OneUiGroup {
+                Column(Modifier.selectableGroup()) {
+                    WidgetTheme.entries.forEachIndexed { index, theme ->
+                        if (index > 0) OneUiDivider()
+                        WidgetOptionRow(widgetThemeLabel(theme), selected = config.theme == theme) {
+                            config = config.copy(theme = theme)
+                        }
+                    }
+                }
+            }
+            OneUiSectionTitle("배경")
+            OneUiGroup {
+                OneUiSwitchRow("위젯 배경", checked = config.backgroundEnabled,
+                    onChange = { config = config.copy(backgroundEnabled = it) })
                 if (widgetOpacityControlVisible(config.backgroundEnabled)) {
-                    Text(
-                        "투명도 ${config.safeOpacityPercent}%  ·  0% 불투명 / 100% 완전 투명",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    Slider(
-                        value = config.safeOpacityPercent.toFloat(),
-                        onValueChange = { value -> config = config.copy(opacityPercent = value.roundToInt()) },
-                        valueRange = 0f..100f,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
+                    OneUiDivider()
+                    Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text("투명도 ${config.safeOpacityPercent}%", style = MaterialTheme.typography.bodyLarge)
+                        Text("0% 불투명 · 100% 완전 투명", style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Slider(value = config.safeOpacityPercent.toFloat(),
+                            onValueChange = { config = config.copy(opacityPercent = it.roundToInt()) },
+                            valueRange = 0f..100f, modifier = Modifier.fillMaxWidth())
+                    }
                 }
-
-                HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
-                Text("표시 항목", style = MaterialTheme.typography.titleMedium)
-                ToggleRow(
-                    label = "새로고침 동작",
-                    checked = config.showRefresh,
-                    onCheckedChange = { config = config.copy(showRefresh = it) },
-                )
-                ToggleRow(
-                    label = "마지막 업데이트 시간",
-                    checked = config.showUpdated,
-                    onCheckedChange = { config = config.copy(showUpdated = it) },
-                )
-
-                WidgetPreview(config)
-                Spacer(Modifier.height(4.dp))
-                Button(onClick = { onSave(config) }, modifier = Modifier.fillMaxWidth()) {
-                    Text("위젯 저장")
-                }
+            }
+            OneUiSectionTitle("표시 항목")
+            OneUiGroup {
+                OneUiSwitchRow("새로고침 버튼", checked = config.showRefresh,
+                    onChange = { config = config.copy(showRefresh = it) })
+                OneUiDivider()
+                OneUiSwitchRow("마지막 업데이트 시간", checked = config.showUpdated,
+                    onChange = { config = config.copy(showUpdated = it) })
             }
         }
     }
 }
 
 @Composable
-private fun WidgetOptionRow(
-    label: String,
-    supporting: String? = null,
-    selected: Boolean,
-    onClick: () -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .selectable(selected = selected, onClick = onClick, role = Role.RadioButton),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        RadioButton(selected = selected, onClick = null)
-        Column(modifier = Modifier.padding(start = 8.dp)) {
+private fun WidgetOptionRow(label: String, supporting: String? = null, selected: Boolean, onClick: () -> Unit) {
+    Row(Modifier.fillMaxWidth().selectable(selected, role = Role.RadioButton, onClick = onClick)
+        .heightIn(min = 64.dp).padding(horizontal = 20.dp, vertical = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp), verticalAlignment = Alignment.CenterVertically) {
+        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(label, style = MaterialTheme.typography.bodyLarge)
-            supporting?.let {
-                Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            }
+            supporting?.let { Text(it, style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant) }
         }
-    }
-}
-
-@Composable
-private fun ToggleRow(label: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .toggleable(value = checked, onValueChange = onCheckedChange, role = Role.Checkbox),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Checkbox(checked = checked, onCheckedChange = null)
-        Text(label)
+        RadioButton(selected = selected, onClick = null)
     }
 }
 

@@ -34,18 +34,18 @@ internal fun resolveWidgetVisualConfig(
     }
     val colors = when (foregroundMode) {
         ResolvedForegroundMode.LIGHT -> ForegroundColors(
-            primary = 0xFFF7F9FC.toInt(),
-            secondary = 0xFFD8DFEA.toInt(),
-            progress = 0xFF9DB5FF.toInt(),
-            track = 0xFF8793A6.toInt(),
-            background = 0xFF161A22.toInt(),
+            primary = 0xFFF7F7F7.toInt(),
+            secondary = 0xFFB5B5B5.toInt(),
+            progress = 0xFF80B5FF.toInt(),
+            track = 0xFF858585.toInt(),
+            background = 0xFF171717.toInt(),
         )
         ResolvedForegroundMode.DARK -> ForegroundColors(
-            primary = 0xFF11151C.toInt(),
-            secondary = 0xFF3D4756.toInt(),
-            progress = 0xFF2857D6.toInt(),
-            track = 0xFF697587.toInt(),
-            background = 0xFFE9EDF4.toInt(),
+            primary = 0xFF171717.toInt(),
+            secondary = 0xFF626262.toInt(),
+            progress = 0xFF0066CC.toInt(),
+            track = 0xFF808080.toInt(),
+            background = 0xFFFFFFFF.toInt(),
         )
     }
     val backgroundAlpha = if (config.backgroundEnabled) {

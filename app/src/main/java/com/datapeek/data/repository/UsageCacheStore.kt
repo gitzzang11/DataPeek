@@ -12,6 +12,8 @@ import com.datapeek.data.model.Carrier
 import com.datapeek.data.model.UsageSnapshot
 import com.datapeek.data.model.UsageSource
 import com.datapeek.data.util.DataUnit
+import com.datapeek.domain.UsageHistoryCodec
+import com.datapeek.domain.recordUsage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -21,6 +23,7 @@ import java.time.LocalDate
 private val Context.usageDataStore by preferencesDataStore(name = "usage_cache")
 
 object UsageCacheStore {
+    private val historyKey = stringPreferencesKey("usage_history_v1")
     private val carrierKey = stringPreferencesKey("carrier")
     private val lineNameKey = stringPreferencesKey("line_name")
     private val totalKey = longPreferencesKey("total_bytes")
@@ -47,8 +50,17 @@ object UsageCacheStore {
 
     fun snapshotFlow(context: Context): Flow<UsageSnapshot?> = context.usageDataStore.data.map { it.toSnapshot() }
 
+    fun trackedUsageFlow(context: Context) = context.usageDataStore.data.map {
+        it.toSnapshot() to UsageHistoryCodec.decode(it[historyKey])
+    }
+
     suspend fun saveSnapshot(context: Context, snapshot: UsageSnapshot) {
         context.usageDataStore.edit { preferences ->
+            var history = UsageHistoryCodec.decode(preferences[historyKey])
+            if (history.isEmpty()) {
+                preferences.toSnapshot()?.let { history = recordUsage(history, it) }
+            }
+            preferences[historyKey] = UsageHistoryCodec.encode(recordUsage(history, snapshot))
             preferences[carrierKey] = snapshot.carrier.name
             snapshot.lineName?.let { preferences[lineNameKey] = it } ?: preferences.remove(lineNameKey)
             snapshot.totalBytes?.let { preferences[totalKey] = it } ?: preferences.remove(totalKey)
@@ -121,6 +133,7 @@ object UsageCacheStore {
 
     suspend fun clearSnapshot(context: Context) {
         context.usageDataStore.edit { preferences ->
+            preferences.remove(historyKey)
             preferences.remove(carrierKey)
             preferences.remove(lineNameKey)
             preferences.remove(totalKey)

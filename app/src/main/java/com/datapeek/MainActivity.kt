@@ -20,48 +20,39 @@ import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -69,17 +60,12 @@ import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import com.datapeek.data.model.Carrier
 import com.datapeek.data.model.UsageSnapshot
-import com.datapeek.data.model.UsageSource
 import com.datapeek.data.provider.freet.FreetSktProvider
 import com.datapeek.data.provider.freet.FreetHtmlUsageParser
 import com.datapeek.data.provider.freet.FreetUsageDataEntryDiagnostics
 import com.datapeek.data.provider.freet.FreetUsageParser
 import com.datapeek.data.provider.freet.UsageParseStatus
 import com.datapeek.data.provider.tworld.TWorldProvider
-import com.datapeek.data.util.calculateRemainingPercent
-import com.datapeek.data.util.daysUntilReset
-import com.datapeek.data.util.formatBytes
-import com.datapeek.data.util.resetLabel
 import com.datapeek.ui.FreetLoginNavigationAction
 import com.datapeek.ui.FreetLoginNavigationPolicy
 import com.datapeek.ui.FreetCallbackUriValidator
@@ -101,22 +87,21 @@ import com.datapeek.ui.toUsageErrorOrNull
 import com.datapeek.ui.inspectFreetUsageApiBody
 import com.datapeek.ui.inspectFreetUsageHtmlBody
 import com.datapeek.ui.FreetLoginLayoutPolicy
-import com.datapeek.ui.DeveloperModeState
 import com.datapeek.ui.developerToolAccess
-import com.datapeek.ui.onVersionTapped
 import com.datapeek.ui.FreetOAuthPocCoordinator
 import com.datapeek.ui.FreetWebViewIssue
-import com.datapeek.ui.HomeUiState
+import com.datapeek.ui.HomeScreen
+import com.datapeek.ui.SettingsScreen
+import com.datapeek.ui.DeveloperOptionsScreen
+import com.datapeek.ui.DataPeekTheme
+import com.datapeek.ui.OneUiTopAppBar
+import com.datapeek.ui.OneUiBackButton
 import com.datapeek.ui.OAuthPocState
 import com.datapeek.ui.CallbackHandoffResult
 import com.datapeek.ui.PocStatus
 import com.datapeek.ui.UsageApiResponseStatus
 import com.datapeek.ui.UsageViewModel
 import com.datapeek.ui.SnapshotDeliveryStatus
-import com.datapeek.ui.UsageUiStatus
-import com.datapeek.ui.usageUiStatus
-import com.datapeek.ui.lastSuccessfulRefreshAgeLabel
-import com.datapeek.ui.SessionStatus
 import com.datapeek.widget.WidgetSizeDiagnosticsStore
 import com.datapeek.widget.formatWidgetObservedSize
 import org.json.JSONArray
@@ -139,6 +124,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         val initialScreen = if (intent.getBooleanExtra(EXTRA_OPEN_LOGIN, false)) {
             AppScreen.LOGIN
         } else {
@@ -680,199 +666,6 @@ private fun DataPeekApp(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun HomeScreen(
-    state: HomeUiState,
-    onRefresh: () -> Unit,
-    onLogin: () -> Unit,
-    onSettings: () -> Unit,
-) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("DataPeek") },
-                actions = { TextButton(onClick = onSettings) { Text("설정") } },
-            )
-        },
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp, vertical = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp),
-        ) {
-            val status = state.usageUiStatus()
-            Text("데이터", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-            Text(state.carrier.label, color = MaterialTheme.colorScheme.primary)
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text("상태", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                Text(
-                    if (state.isMockData) "테스트 데이터" else status.label,
-                    color = when (status) {
-                        UsageUiStatus.NORMAL -> MaterialTheme.colorScheme.primary
-                        UsageUiStatus.LOGIN_REQUIRED -> MaterialTheme.colorScheme.onSurfaceVariant
-                        UsageUiStatus.UPDATE_FAILED -> MaterialTheme.colorScheme.error
-                    },
-                    fontWeight = FontWeight.SemiBold,
-                )
-            }
-
-                if (state.snapshot != null) {
-                UsageCard(state.snapshot)
-            } else {
-                Card(modifier = Modifier.fillMaxWidth()) {
-                    Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                        val title = when {
-                            state.sessionStatus == SessionStatus.CHECKING -> "사용량을 확인하는 중…"
-                            state.isAuthenticated -> "사용량을 불러오지 못했습니다"
-                            else -> "로그인이 필요합니다"
-                        }
-                        Text(title, style = MaterialTheme.typography.titleLarge)
-                        Text(
-                            when {
-                                state.sessionStatus == SessionStatus.CHECKING -> "기존 프리티 세션을 확인하고 있습니다."
-                                else -> state.errorMessage
-                                    ?: "공식 통신사 사이트에서 직접 로그인하면 잔여 데이터 조회를 시작할 수 있습니다."
-                            },
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                        if (state.sessionStatus != SessionStatus.CHECKING) {
-                            val action = if (status == UsageUiStatus.UPDATE_FAILED) onRefresh else onLogin
-                            Button(onClick = action) {
-                                Text(
-                                    when (status) {
-                                        UsageUiStatus.LOGIN_REQUIRED -> "프리티 로그인"
-                                        UsageUiStatus.UPDATE_FAILED -> "다시 시도"
-                                        UsageUiStatus.NORMAL -> "새로고침"
-                                    },
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (state.snapshot != null && status == UsageUiStatus.LOGIN_REQUIRED) {
-                Card(modifier = Modifier.fillMaxWidth()) {
-                    Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text("프리티 로그인이 만료되었습니다.", fontWeight = FontWeight.SemiBold)
-                        Text("마지막 정상 사용량은 유지됩니다. 실제 데이터를 다시 확인하려면 다시 로그인해 주세요.")
-                        Text(
-                            "마지막 정상 데이터 ${state.snapshot.fetchedAt.toLocalTimeLabel()} " +
-                                "(${lastSuccessfulRefreshAgeLabel(state.snapshot.fetchedAt, java.time.Instant.now())})",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                        OutlinedButton(onClick = onLogin, modifier = Modifier.fillMaxWidth()) {
-                            Text("다시 로그인")
-                        }
-                    }
-                }
-            }
-
-            if (
-                state.snapshot != null &&
-                status == UsageUiStatus.UPDATE_FAILED &&
-                state.sessionStatus != SessionStatus.CHECKING
-            ) {
-                Text(
-                    "마지막 정상 데이터 ${state.snapshot.fetchedAt.toLocalTimeLabel()} " +
-                        "(${lastSuccessfulRefreshAgeLabel(state.snapshot.fetchedAt, java.time.Instant.now())})를 유지하고 있습니다.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-
-            state.errorMessage?.let {
-                Text("업데이트 안내: $it", color = MaterialTheme.colorScheme.error)
-            }
-
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Button(onClick = onRefresh, enabled = !state.isRefreshing, modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        when {
-                            state.isRefreshing -> "새로고침 중…"
-                            status == UsageUiStatus.UPDATE_FAILED -> "다시 시도"
-                            else -> "새로고침"
-                        },
-                    )
-                }
-            }
-            Text(
-                "통신사 공식 응답만 통신사 잔여량으로 표시합니다. 기기 사용량 추정은 사용하지 않습니다.",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-    }
-}
-
-@Composable
-private fun UsageCard(snapshot: UsageSnapshot) {
-    val percent = snapshot.remainingPercent ?: calculateRemainingPercent(snapshot.remainingBytes, snapshot.totalBytes)
-    val safePercent = percent?.coerceIn(0f, 100f)
-    val reset = resetLabel(snapshot.daysUntilReset ?: daysUntilReset(snapshot.cycleEnd))
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.padding(22.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(formatBytes(snapshot.remainingBytes, snapshot.remainingUnit), style = MaterialTheme.typography.displaySmall, fontWeight = FontWeight.Bold)
-                    Text("남았습니다", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                }
-                if (safePercent != null) {
-                    Box(
-                        modifier = Modifier
-                            .size(88.dp)
-                            .semantics { contentDescription = "잔여 데이터 ${safePercent.toInt()} 퍼센트" },
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        CircularProgressIndicator(
-                            progress = { safePercent / 100f },
-                            modifier = Modifier.fillMaxSize(),
-                            strokeWidth = 8.dp,
-                        )
-                        Text("${safePercent.toInt()}%", fontWeight = FontWeight.Bold)
-                    }
-                } else {
-                    Text("비율 정보 없음", style = MaterialTheme.typography.labelMedium)
-                }
-            }
-            HorizontalDivider()
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Stat("사용", formatBytes(snapshot.usedBytes, snapshot.usedUnit))
-                Stat("전체", formatBytes(snapshot.totalBytes, snapshot.totalUnit))
-                Stat("초기화", reset)
-            }
-            Text("마지막 업데이트 ${snapshot.fetchedAt.toLocalTimeLabel()}", style = MaterialTheme.typography.bodySmall)
-            Text(
-                when (snapshot.source) {
-                    UsageSource.CARRIER_SERVER -> "프리티 서버 기준"
-                    UsageSource.WEB_PAGE -> "공식 웹페이지 기준"
-                    UsageSource.DEVICE_ESTIMATE -> "기기 기준 예상치"
-                    UsageSource.MOCK -> "개발용 테스트 데이터"
-                },
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.primary,
-            )
-        }
-    }
-}
-
-@Composable
-private fun Stat(label: String, value: String) {
-    Column {
-        Text(label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Text(value, fontWeight = FontWeight.SemiBold)
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
 private fun LoginScreen(
     carrier: Carrier,
     onBack: () -> Unit,
@@ -945,9 +738,9 @@ private fun LoginScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            OneUiTopAppBar(
                 title = { Text("${carrier.label} 로그인") },
-                navigationIcon = { TextButton(onClick = onBack) { Text("뒤로") } },
+                navigationIcon = { OneUiBackButton(onBack) },
                 actions = {
                     TextButton(onClick = onLoginComplete) { Text("완료") }
                 },
@@ -1730,9 +1523,9 @@ private fun OAuthPocDiagnosticsScreen(
 ) {
     Scaffold(
         topBar = {
-            TopAppBar(
+            OneUiTopAppBar(
                 title = { Text("진단 정보") },
-                navigationIcon = { TextButton(onClick = onBack) { Text("뒤로") } },
+                navigationIcon = { OneUiBackButton(onBack) },
             )
         },
     ) { padding ->
@@ -1868,222 +1661,6 @@ private fun UsageParseStatus?.toDiagnosticStatus(): PocStatus = when (this) {
     UsageParseStatus.NOT_TESTED,
     null,
     -> PocStatus.NOT_TESTED
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun SettingsScreen(
-    state: HomeUiState,
-    onBack: () -> Unit,
-    onLogout: () -> Unit,
-    onLogin: () -> Unit,
-    onIntervalChanged: (Long) -> Unit,
-    onAutoRefreshChanged: (Boolean) -> Unit,
-    onOpenDeveloperOptions: () -> Unit,
-    onDeveloperModeChanged: (Boolean) -> Unit,
-) {
-    var selected by remember { mutableLongStateOf(state.autoRefreshMinutes) }
-    var versionTapCount by rememberSaveable { mutableIntStateOf(0) }
-    var developerMessage by rememberSaveable { mutableStateOf<String?>(null) }
-    LaunchedEffect(state.autoRefreshMinutes) {
-        selected = state.autoRefreshMinutes
-    }
-    LaunchedEffect(state.developerModeEnabled) {
-        versionTapCount = 0
-        developerMessage = null
-    }
-    Scaffold(topBar = { TopAppBar(title = { Text("설정") }, navigationIcon = { TextButton(onClick = onBack) { Text("뒤로") } }) }) { padding ->
-        Column(
-            modifier = Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState()).padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            Text("통신사", style = MaterialTheme.typography.titleMedium)
-            Text("프리티 · SKT망", fontWeight = FontWeight.SemiBold)
-            HorizontalDivider()
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text("자동 새로고침", style = MaterialTheme.typography.titleMedium)
-                    Text(
-                        "Android 절전 정책에 따라 실제 실행 시각은 달라질 수 있습니다.",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-                Switch(
-                    checked = state.autoRefreshEnabled,
-                    onCheckedChange = onAutoRefreshChanged,
-                )
-            }
-            Text("자동 갱신 주기", style = MaterialTheme.typography.titleMedium)
-            listOf(30L to "30분", 60L to "1시간", 180L to "3시간", 360L to "6시간", 0L to "수동").forEach { (minutes, label) ->
-                TextButton(
-                    enabled = state.autoRefreshEnabled,
-                    onClick = { selected = minutes; onIntervalChanged(minutes) },
-                ) {
-                    Text(if (selected == minutes) "● $label" else "○ $label")
-                }
-            }
-            HorizontalDivider()
-            if (state.isAuthenticated) {
-                OutlinedButton(onClick = onLogout, modifier = Modifier.fillMaxWidth()) { Text("통신사 계정 로그아웃") }
-            } else {
-                Button(onClick = onLogin, modifier = Modifier.fillMaxWidth()) { Text("다시 로그인") }
-            }
-            HorizontalDivider()
-            Text("앱 정보", style = MaterialTheme.typography.titleMedium)
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        val result = DeveloperModeState(
-                            enabled = state.developerModeEnabled,
-                            versionTapCount = versionTapCount,
-                        ).onVersionTapped()
-                        versionTapCount = result.state.versionTapCount
-                        developerMessage = result.message
-                        if (result.state.enabled && !state.developerModeEnabled) {
-                            onDeveloperModeChanged(true)
-                        }
-                    }
-                    .padding(vertical = 8.dp),
-            ) {
-                Text("앱 버전", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                Text(BuildConfig.VERSION_NAME, fontWeight = FontWeight.SemiBold)
-            }
-            developerMessage?.let { message ->
-                Text(message, color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.bodySmall)
-            }
-            if (developerToolAccess(state.developerModeEnabled).developerOptionsVisible) {
-                OutlinedButton(onClick = onOpenDeveloperOptions, modifier = Modifier.fillMaxWidth()) {
-                    Text("개발자 옵션")
-                }
-            }
-            Text(
-                "자동 갱신 시각은 Android 절전 정책에 따라 달라질 수 있습니다. Google 비밀번호와 인증 쿠키는 이 앱에 저장하지 않습니다.",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun DeveloperOptionsScreen(
-    state: HomeUiState,
-    refreshDiagnostics: FreetUsageRefreshDiagnostics,
-    onBack: () -> Unit,
-    onOpenDiagnostics: () -> Unit,
-    onUseMock: () -> Unit,
-    onClearMock: () -> Unit,
-    onClearCache: () -> Unit,
-    onDisableDeveloperMode: () -> Unit,
-) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("개발자 옵션") },
-                navigationIcon = { TextButton(onClick = onBack) { Text("뒤로") } },
-            )
-        },
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .verticalScroll(rememberScrollState())
-                .padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
-            Text("개발자 옵션 사용 중", style = MaterialTheme.typography.titleLarge)
-            Text(
-                "개발용 기능과 내부 진단은 이 화면에서만 표시됩니다.",
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                style = MaterialTheme.typography.bodySmall,
-            )
-            HorizontalDivider()
-            Text("세션 상태", style = MaterialTheme.typography.titleMedium)
-            Text("Auth state: ${state.sessionStatus.name}", style = MaterialTheme.typography.bodySmall)
-            Text(
-                "Last auth success: ${state.snapshot?.fetchedAt?.toString() ?: "UNKNOWN"}",
-                style = MaterialTheme.typography.bodySmall,
-            )
-            Text(
-                "Last API HTTP: ${refreshDiagnostics.httpStatus ?: "UNKNOWN"}",
-                style = MaterialTheme.typography.bodySmall,
-            )
-            Text(
-                "Session expired reason: ${if (state.sessionStatus == SessionStatus.SESSION_EXPIRED) {
-                    state.errorMessage ?: "CONFIRMED_BY_USAGE_PROBE"
-                } else {
-                    "NONE"
-                }}",
-                style = MaterialTheme.typography.bodySmall,
-            )
-            Text(
-                "Cache timestamp: ${state.snapshot?.fetchedAt?.toString() ?: "NONE"}",
-                style = MaterialTheme.typography.bodySmall,
-            )
-            Text("Auto refresh enabled: ${state.autoRefreshEnabled}", style = MaterialTheme.typography.bodySmall)
-            Text("Configured interval: ${state.autoRefreshMinutes} minutes", style = MaterialTheme.typography.bodySmall)
-            Text("Pending refresh: ${state.refreshDue}", style = MaterialTheme.typography.bodySmall)
-            Text(
-                "Last background attempt: ${state.lastBackgroundAttempt?.toString() ?: "NONE"}",
-                style = MaterialTheme.typography.bodySmall,
-            )
-            Text(
-                "Background result: ${state.lastBackgroundResult ?: "NONE"}",
-                style = MaterialTheme.typography.bodySmall,
-            )
-            Text("Last refresh trigger: ${state.lastRefreshTrigger ?: "NONE"}", style = MaterialTheme.typography.bodySmall)
-            HorizontalDivider()
-            if (state.isMockData) {
-                OutlinedButton(onClick = onClearMock, modifier = Modifier.fillMaxWidth()) {
-                    Text("실제 데이터로 돌아가기")
-                }
-            } else {
-                Button(onClick = onUseMock, modifier = Modifier.fillMaxWidth()) {
-                    Text("Mock 데이터 보기")
-                }
-            }
-            OutlinedButton(onClick = onOpenDiagnostics, modifier = Modifier.fillMaxWidth()) {
-                Text("개발자 진단")
-            }
-            OutlinedButton(onClick = onOpenDiagnostics, modifier = Modifier.fillMaxWidth()) {
-                Text("실제 응답 구조 보기")
-            }
-            OutlinedButton(onClick = onOpenDiagnostics, modifier = Modifier.fillMaxWidth()) {
-                Text("Refresh pipeline 진단")
-            }
-            OutlinedButton(onClick = onOpenDiagnostics, modifier = Modifier.fillMaxWidth()) {
-                Text("OAuth/Callback 진단")
-            }
-            HorizontalDivider()
-            Text("캐시 상태", style = MaterialTheme.typography.titleMedium)
-            Text(
-                if (state.snapshot == null) "저장된 사용량 없음" else "저장된 사용량 있음",
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            OutlinedButton(onClick = onClearCache, modifier = Modifier.fillMaxWidth()) {
-                Text("캐시 초기화")
-            }
-            HorizontalDivider()
-            OutlinedButton(onClick = onDisableDeveloperMode, modifier = Modifier.fillMaxWidth()) {
-                Text("개발자 옵션 사용 중지")
-            }
-        }
-    }
-}
-
-@Composable
-private fun DataPeekTheme(content: @Composable () -> Unit) {
-    val dark = androidx.compose.foundation.isSystemInDarkTheme()
-    val colors = if (dark) androidx.compose.material3.darkColorScheme() else androidx.compose.material3.lightColorScheme()
-    MaterialTheme(colorScheme = colors, content = content)
 }
 
 private fun java.time.Instant.toLocalTimeLabel(): String =

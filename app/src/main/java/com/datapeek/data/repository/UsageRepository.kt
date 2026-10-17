@@ -27,6 +27,7 @@ class UsageRepository(
     val activeCarrier = _activeCarrier.asStateFlow()
 
     val snapshot: Flow<UsageSnapshot?> = UsageCacheStore.snapshotFlow(context)
+    val trackedUsage = UsageCacheStore.trackedUsageFlow(context)
     val lastError: Flow<String?> = UsageCacheStore.errorFlow(context)
     val developerModeEnabled: Flow<Boolean> = UsageCacheStore.developerModeEnabledFlow(context)
     val autoRefreshEnabled: Flow<Boolean> = UsageCacheStore.autoRefreshEnabledFlow(context)

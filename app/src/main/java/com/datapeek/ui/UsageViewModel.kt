@@ -9,6 +9,7 @@ import com.datapeek.data.model.UsageSnapshot
 import com.datapeek.data.repository.UsageRepository
 import com.datapeek.data.session.WebViewCookieBridge
 import com.datapeek.data.util.daysUntilReset
+import com.datapeek.domain.UsageObservation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -35,6 +36,7 @@ data class HomeUiState(
     val lastBackgroundAttempt: Instant? = null,
     val lastBackgroundResult: String? = null,
     val lastRefreshTrigger: String? = null,
+    val usageHistory: List<UsageObservation> = emptyList(),
 )
 
 data class SnapshotDeliveryStatus(
@@ -59,8 +61,10 @@ internal class UsageViewModel(
             }
         }
         scope.launch {
-            repository.snapshot.collect { snapshot ->
-                _state.update { it.copy(snapshot = snapshot, carrier = snapshot?.carrier ?: it.carrier) }
+            repository.trackedUsage.collect { (snapshot, history) ->
+                _state.update {
+                    it.copy(snapshot = snapshot, carrier = snapshot?.carrier ?: it.carrier, usageHistory = history)
+                }
             }
         }
         scope.launch {

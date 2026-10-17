@@ -1,0 +1,455 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-17T13:28:57.590Z",
+  "title": "Design System: DataPeek",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "primary",
+        "canonical": "#0066CC",
+        "tonalRamp": [
+          "oklch(15% 0.1771 255.83)",
+          "oklch(26% 0.1771 255.83)",
+          "oklch(38% 0.1771 255.83)",
+          "oklch(49% 0.1771 255.83)",
+          "oklch(61% 0.1771 255.83)",
+          "oklch(72% 0.1771 255.83)",
+          "oklch(84% 0.1771 255.83)",
+          "oklch(95% 0.1771 255.83)"
+        ]
+      },
+      "on-primary": {
+        "role": "primary",
+        "displayName": "on-primary",
+        "canonical": "#FFFFFF",
+        "tonalRamp": [
+          "oklch(15% 0.0000 89.88)",
+          "oklch(26% 0.0000 89.88)",
+          "oklch(38% 0.0000 89.88)",
+          "oklch(49% 0.0000 89.88)",
+          "oklch(61% 0.0000 89.88)",
+          "oklch(72% 0.0000 89.88)",
+          "oklch(84% 0.0000 89.88)",
+          "oklch(95% 0.0000 89.88)"
+        ]
+      },
+      "primary-container": {
+        "role": "primary",
+        "displayName": "primary-container",
+        "canonical": "#E5F0FF",
+        "tonalRamp": [
+          "oklch(15% 0.0234 256.10)",
+          "oklch(26% 0.0234 256.10)",
+          "oklch(38% 0.0234 256.10)",
+          "oklch(49% 0.0234 256.10)",
+          "oklch(61% 0.0234 256.10)",
+          "oklch(72% 0.0234 256.10)",
+          "oklch(84% 0.0234 256.10)",
+          "oklch(95% 0.0234 256.10)"
+        ]
+      },
+      "background": {
+        "role": "neutral",
+        "displayName": "background",
+        "canonical": "#F2F2F2",
+        "tonalRamp": [
+          "oklch(15% 0.0000 89.88)",
+          "oklch(26% 0.0000 89.88)",
+          "oklch(38% 0.0000 89.88)",
+          "oklch(49% 0.0000 89.88)",
+          "oklch(61% 0.0000 89.88)",
+          "oklch(72% 0.0000 89.88)",
+          "oklch(84% 0.0000 89.88)",
+          "oklch(95% 0.0000 89.88)"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "surface",
+        "canonical": "#FFFFFF",
+        "tonalRamp": [
+          "oklch(15% 0.0000 89.88)",
+          "oklch(26% 0.0000 89.88)",
+          "oklch(38% 0.0000 89.88)",
+          "oklch(49% 0.0000 89.88)",
+          "oklch(61% 0.0000 89.88)",
+          "oklch(72% 0.0000 89.88)",
+          "oklch(84% 0.0000 89.88)",
+          "oklch(95% 0.0000 89.88)"
+        ]
+      },
+      "on-surface": {
+        "role": "neutral",
+        "displayName": "on-surface",
+        "canonical": "#171717",
+        "tonalRamp": [
+          "oklch(15% 0.0000 89.88)",
+          "oklch(26% 0.0000 89.88)",
+          "oklch(38% 0.0000 89.88)",
+          "oklch(49% 0.0000 89.88)",
+          "oklch(61% 0.0000 89.88)",
+          "oklch(72% 0.0000 89.88)",
+          "oklch(84% 0.0000 89.88)",
+          "oklch(95% 0.0000 89.88)"
+        ]
+      },
+      "secondary-text": {
+        "role": "neutral",
+        "displayName": "secondary-text",
+        "canonical": "#626262",
+        "tonalRamp": [
+          "oklch(15% 0.0000 89.88)",
+          "oklch(26% 0.0000 89.88)",
+          "oklch(38% 0.0000 89.88)",
+          "oklch(49% 0.0000 89.88)",
+          "oklch(61% 0.0000 89.88)",
+          "oklch(72% 0.0000 89.88)",
+          "oklch(84% 0.0000 89.88)",
+          "oklch(95% 0.0000 89.88)"
+        ]
+      },
+      "surface-variant": {
+        "role": "neutral",
+        "displayName": "surface-variant",
+        "canonical": "#EAEAEA",
+        "tonalRamp": [
+          "oklch(15% 0.0000 89.88)",
+          "oklch(26% 0.0000 89.88)",
+          "oklch(38% 0.0000 89.88)",
+          "oklch(49% 0.0000 89.88)",
+          "oklch(61% 0.0000 89.88)",
+          "oklch(72% 0.0000 89.88)",
+          "oklch(84% 0.0000 89.88)",
+          "oklch(95% 0.0000 89.88)"
+        ]
+      },
+      "divider": {
+        "role": "neutral",
+        "displayName": "divider",
+        "canonical": "#E5E5E5",
+        "tonalRamp": [
+          "oklch(15% 0.0000 89.88)",
+          "oklch(26% 0.0000 89.88)",
+          "oklch(38% 0.0000 89.88)",
+          "oklch(49% 0.0000 89.88)",
+          "oklch(61% 0.0000 89.88)",
+          "oklch(72% 0.0000 89.88)",
+          "oklch(84% 0.0000 89.88)",
+          "oklch(95% 0.0000 89.88)"
+        ]
+      },
+      "outline": {
+        "role": "neutral",
+        "displayName": "outline",
+        "canonical": "#808080",
+        "tonalRamp": [
+          "oklch(15% 0.0000 89.88)",
+          "oklch(26% 0.0000 89.88)",
+          "oklch(38% 0.0000 89.88)",
+          "oklch(49% 0.0000 89.88)",
+          "oklch(61% 0.0000 89.88)",
+          "oklch(72% 0.0000 89.88)",
+          "oklch(84% 0.0000 89.88)",
+          "oklch(95% 0.0000 89.88)"
+        ]
+      },
+      "error": {
+        "role": "status",
+        "displayName": "error",
+        "canonical": "#B3261E",
+        "tonalRamp": [
+          "oklch(15% 0.1783 28.70)",
+          "oklch(26% 0.1783 28.70)",
+          "oklch(38% 0.1783 28.70)",
+          "oklch(49% 0.1783 28.70)",
+          "oklch(61% 0.1783 28.70)",
+          "oklch(72% 0.1783 28.70)",
+          "oklch(84% 0.1783 28.70)",
+          "oklch(95% 0.1783 28.70)"
+        ]
+      },
+      "dark-primary": {
+        "role": "primary",
+        "displayName": "dark-primary",
+        "canonical": "#80B5FF",
+        "tonalRamp": [
+          "oklch(15% 0.1208 256.86)",
+          "oklch(26% 0.1208 256.86)",
+          "oklch(38% 0.1208 256.86)",
+          "oklch(49% 0.1208 256.86)",
+          "oklch(61% 0.1208 256.86)",
+          "oklch(72% 0.1208 256.86)",
+          "oklch(84% 0.1208 256.86)",
+          "oklch(95% 0.1208 256.86)"
+        ]
+      },
+      "dark-on-primary": {
+        "role": "primary",
+        "displayName": "dark-on-primary",
+        "canonical": "#002F60",
+        "tonalRamp": [
+          "oklch(15% 0.0991 254.31)",
+          "oklch(26% 0.0991 254.31)",
+          "oklch(38% 0.0991 254.31)",
+          "oklch(49% 0.0991 254.31)",
+          "oklch(61% 0.0991 254.31)",
+          "oklch(72% 0.0991 254.31)",
+          "oklch(84% 0.0991 254.31)",
+          "oklch(95% 0.0991 254.31)"
+        ]
+      },
+      "dark-primary-container": {
+        "role": "primary",
+        "displayName": "dark-primary-container",
+        "canonical": "#143354",
+        "tonalRamp": [
+          "oklch(15% 0.0698 252.16)",
+          "oklch(26% 0.0698 252.16)",
+          "oklch(38% 0.0698 252.16)",
+          "oklch(49% 0.0698 252.16)",
+          "oklch(61% 0.0698 252.16)",
+          "oklch(72% 0.0698 252.16)",
+          "oklch(84% 0.0698 252.16)",
+          "oklch(95% 0.0698 252.16)"
+        ]
+      },
+      "dark-background": {
+        "role": "neutral",
+        "displayName": "dark-background",
+        "canonical": "#000000",
+        "tonalRamp": [
+          "oklch(15% 0.0000 0.00)",
+          "oklch(26% 0.0000 0.00)",
+          "oklch(38% 0.0000 0.00)",
+          "oklch(49% 0.0000 0.00)",
+          "oklch(61% 0.0000 0.00)",
+          "oklch(72% 0.0000 0.00)",
+          "oklch(84% 0.0000 0.00)",
+          "oklch(95% 0.0000 0.00)"
+        ]
+      },
+      "dark-surface": {
+        "role": "neutral",
+        "displayName": "dark-surface",
+        "canonical": "#171717",
+        "tonalRamp": [
+          "oklch(15% 0.0000 89.88)",
+          "oklch(26% 0.0000 89.88)",
+          "oklch(38% 0.0000 89.88)",
+          "oklch(49% 0.0000 89.88)",
+          "oklch(61% 0.0000 89.88)",
+          "oklch(72% 0.0000 89.88)",
+          "oklch(84% 0.0000 89.88)",
+          "oklch(95% 0.0000 89.88)"
+        ]
+      },
+      "dark-on-surface": {
+        "role": "neutral",
+        "displayName": "dark-on-surface",
+        "canonical": "#F7F7F7",
+        "tonalRamp": [
+          "oklch(15% 0.0000 89.88)",
+          "oklch(26% 0.0000 89.88)",
+          "oklch(38% 0.0000 89.88)",
+          "oklch(49% 0.0000 89.88)",
+          "oklch(61% 0.0000 89.88)",
+          "oklch(72% 0.0000 89.88)",
+          "oklch(84% 0.0000 89.88)",
+          "oklch(95% 0.0000 89.88)"
+        ]
+      },
+      "dark-secondary-text": {
+        "role": "neutral",
+        "displayName": "dark-secondary-text",
+        "canonical": "#B5B5B5",
+        "tonalRamp": [
+          "oklch(15% 0.0000 89.88)",
+          "oklch(26% 0.0000 89.88)",
+          "oklch(38% 0.0000 89.88)",
+          "oklch(49% 0.0000 89.88)",
+          "oklch(61% 0.0000 89.88)",
+          "oklch(72% 0.0000 89.88)",
+          "oklch(84% 0.0000 89.88)",
+          "oklch(95% 0.0000 89.88)"
+        ]
+      },
+      "dark-surface-variant": {
+        "role": "neutral",
+        "displayName": "dark-surface-variant",
+        "canonical": "#303030",
+        "tonalRamp": [
+          "oklch(15% 0.0000 89.88)",
+          "oklch(26% 0.0000 89.88)",
+          "oklch(38% 0.0000 89.88)",
+          "oklch(49% 0.0000 89.88)",
+          "oklch(61% 0.0000 89.88)",
+          "oklch(72% 0.0000 89.88)",
+          "oklch(84% 0.0000 89.88)",
+          "oklch(95% 0.0000 89.88)"
+        ]
+      },
+      "dark-divider": {
+        "role": "neutral",
+        "displayName": "dark-divider",
+        "canonical": "#353535",
+        "tonalRamp": [
+          "oklch(15% 0.0000 89.88)",
+          "oklch(26% 0.0000 89.88)",
+          "oklch(38% 0.0000 89.88)",
+          "oklch(49% 0.0000 89.88)",
+          "oklch(61% 0.0000 89.88)",
+          "oklch(72% 0.0000 89.88)",
+          "oklch(84% 0.0000 89.88)",
+          "oklch(95% 0.0000 89.88)"
+        ]
+      },
+      "dark-outline": {
+        "role": "neutral",
+        "displayName": "dark-outline",
+        "canonical": "#858585",
+        "tonalRamp": [
+          "oklch(15% 0.0000 89.88)",
+          "oklch(26% 0.0000 89.88)",
+          "oklch(38% 0.0000 89.88)",
+          "oklch(49% 0.0000 89.88)",
+          "oklch(61% 0.0000 89.88)",
+          "oklch(72% 0.0000 89.88)",
+          "oklch(84% 0.0000 89.88)",
+          "oklch(95% 0.0000 89.88)"
+        ]
+      },
+      "dark-error": {
+        "role": "status",
+        "displayName": "dark-error",
+        "canonical": "#FFB4AB",
+        "tonalRamp": [
+          "oklch(15% 0.0891 26.76)",
+          "oklch(26% 0.0891 26.76)",
+          "oklch(38% 0.0891 26.76)",
+          "oklch(49% 0.0891 26.76)",
+          "oklch(61% 0.0891 26.76)",
+          "oklch(72% 0.0891 26.76)",
+          "oklch(84% 0.0891 26.76)",
+          "oklch(95% 0.0891 26.76)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display-medium": {
+        "displayName": "잔여량",
+        "purpose": "주요 잔여량 수치."
+      },
+      "body-large": {
+        "displayName": "목록 제목",
+        "purpose": "설정 행 제목과 주요 설명."
+      }
+    },
+    "shadows": [],
+    "motion": [],
+    "breakpoints": [
+      {
+        "name": "compact-height",
+        "value": "height < 480dp"
+      }
+    ],
+    "previewNotes": "Native Compose를 밝은 테마 HTML/CSS로 번역한 시각 참고. dp/sp를 같은 수치의 CSS px로 근사한다. hover/focus는 패널 접근성을 위한 근사이며 Android ripple이나 실제 제품 동작을 증명하지 않는다. tonalRamp는 패널에서만 쓰는 합성 OKLCH 명도 스트립이며 앱 팔레트 토큰이 아니다."
+  },
+  "components": [
+    {
+      "name": "Primary action",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "하단 주요 동작의 밝은 테마 시각 참고.",
+      "html": "<button class=\"ds-primary\">새로고침</button>",
+      "css": ".ds-primary{font-family:system-ui,sans-serif;font-size:16px;font-weight:600;line-height:24px;background:#0066CC;color:#FFFFFF;border:0;border-radius:999px;padding:14px 24px;min-height:52px;width:100%}.ds-primary:hover{filter:brightness(.96)}.ds-primary:active{filter:brightness(.9)}.ds-primary:disabled{background:#E5E5E5;color:#626262}.ds-primary:focus-visible,.ds-text:focus-visible,.ds-outlined:focus-visible,.ds-back:focus-visible,.ds-row:focus-visible,.ds-radio-row:focus-within{outline:2px solid #0066CC;outline-offset:3px}"
+    },
+    {
+      "name": "Text action",
+      "kind": "button",
+      "refersTo": "button-text",
+      "description": "완료·취소용 네이티브 TextButton의 시각 참고.",
+      "html": "<button class=\"ds-text\">취소</button>",
+      "css": ".ds-text{font-family:system-ui,sans-serif;font-size:16px;font-weight:600;line-height:24px;background:transparent;color:#0066CC;border:0;border-radius:999px;padding:10px 16px;min-height:48px}.ds-text:hover{background:#E5F0FF}.ds-text:active{background:#D4E5FF}.ds-primary:focus-visible,.ds-text:focus-visible,.ds-outlined:focus-visible,.ds-back:focus-visible,.ds-row:focus-visible,.ds-radio-row:focus-within{outline:2px solid #0066CC;outline-offset:3px}"
+    },
+    {
+      "name": "Outlined diagnostic action",
+      "kind": "button",
+      "description": "진단 보조 동작. Material 기본 컨트롤의 시각 참고.",
+      "html": "<button class=\"ds-outlined\">응답 구조 보기</button>",
+      "css": ".ds-outlined{font-family:system-ui,sans-serif;font-size:16px;font-weight:600;line-height:24px;background:transparent;color:#0066CC;border:1px solid #808080;border-radius:999px;padding:10px 24px;min-height:48px}.ds-outlined:hover{background:#E5F0FF}.ds-outlined:active{background:#D4E5FF}.ds-primary:focus-visible,.ds-text:focus-visible,.ds-outlined:focus-visible,.ds-back:focus-visible,.ds-row:focus-visible,.ds-radio-row:focus-within{outline:2px solid #0066CC;outline-offset:3px}"
+    },
+    {
+      "name": "Expanded app bar",
+      "kind": "nav",
+      "description": "펼친 제목과 뒤로 동작의 시각 참고. 실제 접힘은 Compose 담당.",
+      "html": "<nav class=\"ds-nav\"><button class=\"ds-back\" aria-label=\"뒤로\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M15 4 7 12l8 8\"/></svg></button><h1 class=\"ds-heading\">설정</h1></nav>",
+      "css": ".ds-nav{font-family:system-ui,sans-serif;position:relative;background:#F2F2F2;color:#171717;min-height:220px;display:flex;align-items:flex-end;justify-content:center}.ds-back{position:absolute;left:0;top:0;width:48px;height:48px;background:transparent;border:0;color:#171717;border-radius:999px}.ds-back:hover{background:#E5E5E5}.ds-back:active{background:#D4D4D4}.ds-heading{font-size:28px;font-weight:700;line-height:36px;margin:0 0 24px}.ds-primary:focus-visible,.ds-text:focus-visible,.ds-outlined:focus-visible,.ds-back:focus-visible,.ds-row:focus-visible,.ds-radio-row:focus-within{outline:2px solid #0066CC;outline-offset:3px}"
+    },
+    {
+      "name": "Settings group",
+      "kind": "card",
+      "refersTo": "group",
+      "description": "둥근 중립 표면과 안쪽 구분선.",
+      "html": "<section class=\"ds-group\"><div class=\"ds-static-row\">프리티 · SKT망<span class=\"ds-summary\">연결됨</span></div><div class=\"ds-divider\"></div><button class=\"ds-row\">통신사 로그인<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"m9 5 7 7-7 7\"/></svg></button></section>",
+      "css": ".ds-group{font-family:system-ui,sans-serif;background:#FFFFFF;color:#171717;border-radius:26px;overflow:hidden}.ds-static-row,.ds-row{padding:16px 20px;min-height:40px;font-size:17px;line-height:25px}.ds-summary{display:block;font-size:15px;line-height:23px;color:#626262;margin-top:4px}.ds-divider{height:1px;background:#E5E5E5;margin:0 20px}.ds-row{font-family:system-ui,sans-serif;background:transparent;color:#171717;border:0;width:100%;min-height:72px;display:flex;align-items:center;justify-content:space-between;text-align:left}.ds-row:hover{background:#F2F2F2}.ds-row:active{background:#EAEAEA}.ds-primary:focus-visible,.ds-text:focus-visible,.ds-outlined:focus-visible,.ds-back:focus-visible,.ds-row:focus-visible,.ds-radio-row:focus-within{outline:2px solid #0066CC;outline-offset:3px}"
+    },
+    {
+      "name": "Remaining data",
+      "kind": "custom",
+      "refersTo": "remaining-value",
+      "description": "샘플 수치로 표현한 잔여량·진행 막대.",
+      "html": "<section class=\"ds-usage\"><div class=\"ds-carrier\">프리티 · SKT망</div><div class=\"ds-label\">남은 데이터</div><div class=\"ds-value\">6.4 GB</div><div class=\"ds-track\" role=\"progressbar\" aria-label=\"잔여 데이터\" aria-valuenow=\"32\" aria-valuemin=\"0\" aria-valuemax=\"100\"><div class=\"ds-fill\"></div></div></section>",
+      "css": ".ds-usage{font-family:system-ui,sans-serif;background:#FFFFFF;color:#171717;border-radius:26px;padding:24px}.ds-carrier{font-size:15px;line-height:23px;color:#626262;margin-bottom:16px}.ds-label{font-size:18px;font-weight:500;line-height:26px}.ds-value{font-size:44px;font-weight:700;line-height:52px;color:#0066CC;margin-top:4px}.ds-track{height:10px;background:#E5F0FF;border-radius:12px;margin-top:16px;overflow:hidden}.ds-fill{height:100%;width:32%;border-radius:12px;background:#0066CC}"
+    },
+    {
+      "name": "Switch row",
+      "kind": "input",
+      "refersTo": "setting-row",
+      "description": "스위치 행 의미의 시각 참고. 제품의 텍스트 입력 필드는 아님.",
+      "html": "<label class=\"ds-switch-row\"><span class=\"ds-switch-copy\">자동 새로고침<small class=\"ds-switch-summary\">앱을 열면 최신 사용량을 확인해요</small></span><input class=\"ds-switch\" type=\"checkbox\" role=\"switch\" checked aria-label=\"자동 새로고침\"></label>",
+      "css": ".ds-switch-row{font-family:system-ui,sans-serif;display:flex;gap:16px;align-items:center;justify-content:space-between;background:#FFFFFF;color:#171717;border-radius:26px;padding:16px 20px;min-height:40px;font-size:17px;line-height:25px;cursor:pointer}.ds-switch-copy{flex:1}.ds-switch-summary{display:block;font-size:15px;line-height:23px;color:#626262;margin-top:4px}.ds-switch{appearance:none;width:52px;height:32px;flex-shrink:0;background:#EAEAEA;border:2px solid #808080;border-radius:999px;position:relative;cursor:pointer}.ds-switch:before{content:'';display:block;width:16px;height:16px;border-radius:50%;background:#808080;position:absolute;left:6px;top:6px}.ds-switch:checked{background:#0066CC;border-color:#0066CC}.ds-switch:checked:before{background:#FFFFFF;width:24px;height:24px;left:22px;top:2px}.ds-switch-row:hover{background:#F2F2F2}.ds-switch-row:active{background:#EAEAEA}.ds-switch:focus-visible{outline:2px solid #0066CC;outline-offset:3px}"
+    },
+    {
+      "name": "Interval radio dialog",
+      "kind": "custom",
+      "description": "중립 대화상자와 전체 행 선택의 시각 참고.",
+      "html": "<section class=\"ds-dialog\" role=\"group\" aria-label=\"새로고침 주기\"><h2 class=\"ds-dialog-title\">새로고침 주기</h2><label class=\"ds-radio-row\"><input class=\"ds-radio\" type=\"radio\" name=\"ds-interval\" checked>1시간</label><label class=\"ds-radio-row\"><input class=\"ds-radio\" type=\"radio\" name=\"ds-interval\">3시간</label></section>",
+      "css": ".ds-dialog{font-family:system-ui,sans-serif;padding:24px;background:#FFFFFF;color:#171717;border-radius:30px}.ds-dialog-title{font-size:22px;font-weight:600;line-height:30px;margin:0 0 16px}.ds-radio-row{display:flex;gap:16px;align-items:center;min-height:56px;font-size:17px;line-height:25px;cursor:pointer;border-radius:12px}.ds-radio{width:20px;height:20px;accent-color:#0066CC}.ds-radio-row:hover{background:#F2F2F2}.ds-radio-row:active{background:#EAEAEA}.ds-primary:focus-visible,.ds-text:focus-visible,.ds-outlined:focus-visible,.ds-back:focus-visible,.ds-row:focus-visible,.ds-radio-row:focus-within{outline:2px solid #0066CC;outline-offset:3px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "삼성 기본 앱에 가까운 데이터 화면",
+    "overview": "사용자가 선택한 Samsung One UI 방향을 Android Compose로 구현한다. 큰 제목과 여유 있는 보기 영역, 둥근 목록 그룹, 하단의 주요 버튼으로 구성하며 한국어 내용과 잔여량이 먼저 읽힌다. 시스템 글꼴과 네이티브 Material 3 동작을 사용한다.\n\n이 문서는 실제 구현을 기록한다. 기준은 OneUiTheme.kt, OneUiComponents.kt, 홈·설정·예측·위젯 설정 화면과 .impeccable/review/의 에뮬레이터 캡처다. PRODUCT.md의 시각적 약속을 유지하며 Samsung 독점 글꼴이나 SDK를 요구하지 않는다.",
+    "keyCharacteristics": [
+      "중립 배경과 단색 표면 위의 파란 잔여량·주요 동작.",
+      "큰 제목이 스크롤에 따라 작은 앱 바로 접히는 구조.",
+      "설정은 그룹 목록으로, 설명과 상태는 한국어 문장으로 표현.",
+      "시스템 다크 테마와 큰 글자 설정을 따르는 네이티브 화면."
+    ],
+    "rules": [
+      {
+        "name": "The Semantic Color Rule",
+        "body": "화면은 MaterialTheme 역할을 사용하고, 테마에 따라 강조색·표면·글자색을 함께 전환한다.",
+        "section": "colors"
+      },
+      {
+        "name": "The Readable Width Rule",
+        "body": "큰 화면에서도 일반 화면 본문을 720dp 안에 두고, 큰 글자에서는 세부 값의 줄바꿈을 허용한다.",
+        "section": "layout"
+      }
+    ],
+    "dos": [
+      "**Do** 중립 표면, 파란 주요 동작, 안쪽 구분선의 역할을 유지한다.",
+      "**Do** 큰 글자에서 라벨·값·설명이 자연스럽게 줄바꿈하고 스크롤되게 한다.",
+      "**Do** 만료·오류·조회 중·테스트 데이터를 설명 문장과 동작 이름으로 구분한다.",
+      "**Do** 사용자 위젯의 스타일·색상·배경 투명도·표시 항목 선택을 보존한다."
+    ],
+    "donts": [
+      "**Don't** 일반 그룹에 장식 그림자나 그라데이션을 추가한다.",
+      "**Don't** 시스템 테마와 무관한 고정 글자색을 일반 화면에 사용한다.",
+      "**Don't** 공식 로그인 WebView의 웹페이지 내부를 앱 화면처럼 재디자인한다.",
+      "**Don't** 테스트 캡처나 위젯 미리보기 수치를 실제 통신사 조회 결과로 표현한다."
+    ]
+  }
+}
