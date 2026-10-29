@@ -28,6 +28,7 @@ class UsageRepository(
 
     val snapshot: Flow<UsageSnapshot?> = UsageCacheStore.snapshotFlow(context)
     val trackedUsage = UsageCacheStore.trackedUsageFlow(context)
+    val resetDay: Flow<Int> = UsageCacheStore.resetDayFlow(context)
     val lastError: Flow<String?> = UsageCacheStore.errorFlow(context)
     val developerModeEnabled: Flow<Boolean> = UsageCacheStore.developerModeEnabledFlow(context)
     val autoRefreshEnabled: Flow<Boolean> = UsageCacheStore.autoRefreshEnabledFlow(context)
@@ -92,7 +93,16 @@ class UsageRepository(
 
     suspend fun clearMockProvider() {
         overrideProvider = null
-        UsageCacheStore.clearSnapshot(context)
+        // Test data never reaches the usage history, so turning it off must not erase the real history.
+        UsageCacheStore.clearSnapshot(context, keepHistory = true)
+    }
+
+    suspend fun setResetDay(day: Int) {
+        UsageCacheStore.setResetDay(context, day)
+    }
+
+    suspend fun clearUsageHistory() {
+        UsageCacheStore.clearUsageHistory(context)
     }
 
     suspend fun setAutoRefreshMinutes(minutes: Long) {

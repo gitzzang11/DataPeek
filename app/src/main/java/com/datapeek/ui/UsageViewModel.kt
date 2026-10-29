@@ -9,7 +9,8 @@ import com.datapeek.data.model.UsageSnapshot
 import com.datapeek.data.repository.UsageRepository
 import com.datapeek.data.session.WebViewCookieBridge
 import com.datapeek.data.util.daysUntilReset
-import com.datapeek.domain.UsageObservation
+import com.datapeek.domain.UsageLedger
+import com.datapeek.domain.resolveResetDay
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -36,8 +37,12 @@ data class HomeUiState(
     val lastBackgroundAttempt: Instant? = null,
     val lastBackgroundResult: String? = null,
     val lastRefreshTrigger: String? = null,
-    val usageHistory: List<UsageObservation> = emptyList(),
-)
+    val ledger: UsageLedger = UsageLedger(),
+    /** 0 = automatic (carrier-provided reset date, otherwise the 1st), 1..31 = fixed day of the month. */
+    val resetDaySetting: Int = 0,
+) {
+    val resetDay: Int get() = resolveResetDay(resetDaySetting, ledger.carrierResetHint ?: snapshot?.cycleEnd)
+}
 
 data class SnapshotDeliveryStatus(
     val repositoryCacheUpdated: Boolean,
@@ -61,11 +66,14 @@ internal class UsageViewModel(
             }
         }
         scope.launch {
-            repository.trackedUsage.collect { (snapshot, history) ->
+            repository.trackedUsage.collect { (snapshot, ledger) ->
                 _state.update {
-                    it.copy(snapshot = snapshot, carrier = snapshot?.carrier ?: it.carrier, usageHistory = history)
+                    it.copy(snapshot = snapshot, carrier = snapshot?.carrier ?: it.carrier, ledger = ledger)
                 }
             }
+        }
+        scope.launch {
+            repository.resetDay.collect { day -> _state.update { it.copy(resetDaySetting = day) } }
         }
         scope.launch {
             repository.lastError.collect { message ->
@@ -292,6 +300,14 @@ internal class UsageViewModel(
         }
     }
 
+    fun setResetDay(day: Int) {
+        scope.launch { repository.setResetDay(day) }
+    }
+
+    fun clearUsageHistory() {
+        scope.launch { repository.clearUsageHistory() }
+    }
+
     fun clearCachedSnapshot() {
         scope.launch {
             repository.clearCachedSnapshot()
@@ -383,6 +399,7 @@ internal class UsageViewModel(
                 sessionStatus = SessionStatus.UNKNOWN,
                 autoRefreshEnabled = _state.value.autoRefreshEnabled,
                 autoRefreshMinutes = _state.value.autoRefreshMinutes,
+                resetDaySetting = _state.value.resetDaySetting,
             )
         }
     }

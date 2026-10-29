@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -13,6 +14,8 @@ import com.datapeek.data.model.UsageSnapshot
 import com.datapeek.data.model.UsageSource
 import com.datapeek.data.util.DataUnit
 import com.datapeek.domain.UsageHistoryCodec
+import com.datapeek.domain.UsageLedger
+import com.datapeek.domain.UsageLedgerCodec
 import com.datapeek.domain.recordUsage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -24,6 +27,8 @@ private val Context.usageDataStore by preferencesDataStore(name = "usage_cache")
 
 object UsageCacheStore {
     private val historyKey = stringPreferencesKey("usage_history_v1")
+    private val ledgerKey = stringPreferencesKey("usage_ledger_v2")
+    private val resetDayKey = intPreferencesKey("reset_day")
     private val carrierKey = stringPreferencesKey("carrier")
     private val lineNameKey = stringPreferencesKey("line_name")
     private val totalKey = longPreferencesKey("total_bytes")
@@ -51,16 +56,31 @@ object UsageCacheStore {
     fun snapshotFlow(context: Context): Flow<UsageSnapshot?> = context.usageDataStore.data.map { it.toSnapshot() }
 
     fun trackedUsageFlow(context: Context) = context.usageDataStore.data.map {
-        it.toSnapshot() to UsageHistoryCodec.decode(it[historyKey])
+        it.toSnapshot() to it.readLedger()
+    }
+
+    fun resetDayFlow(context: Context): Flow<Int> = context.usageDataStore.data.map { it.resetDay() }
+
+    /** 0 keeps the automatic reset day (carrier-provided, otherwise the 1st); 1..31 is a fixed day of the month. */
+    suspend fun setResetDay(context: Context, day: Int) {
+        context.usageDataStore.edit { it[resetDayKey] = day.takeIf { value -> value in 1..31 } ?: 0 }
+    }
+
+    suspend fun clearUsageHistory(context: Context) {
+        context.usageDataStore.edit {
+            it.remove(ledgerKey)
+            it.remove(historyKey)
+        }
     }
 
     suspend fun saveSnapshot(context: Context, snapshot: UsageSnapshot) {
         context.usageDataStore.edit { preferences ->
-            var history = UsageHistoryCodec.decode(preferences[historyKey])
-            if (history.isEmpty()) {
-                preferences.toSnapshot()?.let { history = recordUsage(history, it) }
+            var ledger = preferences.readLedger()
+            if (ledger.days.isEmpty()) {
+                preferences.toSnapshot()?.let { ledger = recordUsage(ledger, it) }
             }
-            preferences[historyKey] = UsageHistoryCodec.encode(recordUsage(history, snapshot))
+            preferences[ledgerKey] = UsageLedgerCodec.encode(recordUsage(ledger, snapshot))
+            preferences.remove(historyKey)
             preferences[carrierKey] = snapshot.carrier.name
             snapshot.lineName?.let { preferences[lineNameKey] = it } ?: preferences.remove(lineNameKey)
             snapshot.totalBytes?.let { preferences[totalKey] = it } ?: preferences.remove(totalKey)
@@ -131,9 +151,12 @@ object UsageCacheStore {
         }
     }
 
-    suspend fun clearSnapshot(context: Context) {
+    suspend fun clearSnapshot(context: Context, keepHistory: Boolean = false) {
         context.usageDataStore.edit { preferences ->
-            preferences.remove(historyKey)
+            if (!keepHistory) {
+                preferences.remove(historyKey)
+                preferences.remove(ledgerKey)
+            }
             preferences.remove(carrierKey)
             preferences.remove(lineNameKey)
             preferences.remove(totalKey)
@@ -196,6 +219,14 @@ object UsageCacheStore {
 
     suspend fun readAutoRefreshMinutes(context: Context): Long =
         context.usageDataStore.data.first()[autoRefreshKey] ?: DEFAULT_REFRESH_MINUTES
+
+    private fun Preferences.resetDay(): Int = (get(resetDayKey) ?: 0).takeIf { it in 1..31 } ?: 0
+
+    /** Reads the per-day ledger, converting a 1.1 reading list the first time it is seen. */
+    private fun Preferences.readLedger(): UsageLedger =
+        UsageLedgerCodec.decode(get(ledgerKey))
+            ?: UsageHistoryCodec.decode(get(historyKey)).takeIf { it.isNotEmpty() }?.let(UsageLedgerCodec::fromLegacy)
+            ?: UsageLedger()
 
     private fun Preferences.autoRefreshEnabled(): Boolean =
         get(autoRefreshEnabledKey) ?: (get(autoRefreshKey)?.let { it > 0L } ?: DEFAULT_AUTO_REFRESH_ENABLED)

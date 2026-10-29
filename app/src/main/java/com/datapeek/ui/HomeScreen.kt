@@ -23,12 +23,17 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 @Composable
-internal fun HomeScreen(state: HomeUiState, onRefresh: () -> Unit, onLogin: () -> Unit, onSettings: () -> Unit) {
+internal fun HomeScreen(
+    state: HomeUiState, onRefresh: () -> Unit, onLogin: () -> Unit, onSettings: () -> Unit, onHistory: () -> Unit,
+) {
     val status = state.usageUiStatus()
     val needsLogin = status == UsageUiStatus.LOGIN_REQUIRED
     OneUiScreen(
         title = "데이터 사용량",
-        actions = { IconButton(onClick = onSettings) { Icon(painterResource(R.drawable.ic_settings), "설정") } },
+        actions = {
+            IconButton(onClick = onHistory) { Icon(painterResource(R.drawable.ic_history), "사용 기록") }
+            IconButton(onClick = onSettings) { Icon(painterResource(R.drawable.ic_settings), "설정") }
+        },
         bottomBar = {
             OneUiBottomAction(
                 label = when {
@@ -45,7 +50,7 @@ internal fun HomeScreen(state: HomeUiState, onRefresh: () -> Unit, onLogin: () -
         if (snapshot != null) {
             RemainingDataGroup(snapshot, state.isMockData)
             OneUiSectionTitle("소진 예측")
-            UsageForecastCard(state)
+            UsageForecastCard(state, onOpenHistory = onHistory)
             OneUiSectionTitle("업데이트")
             OneUiGroup {
                 OneUiSettingRow(

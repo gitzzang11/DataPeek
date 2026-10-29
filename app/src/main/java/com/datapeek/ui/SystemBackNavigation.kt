@@ -8,6 +8,7 @@ internal enum class AppScreen {
     SETTINGS,
     DEVELOPER_OPTIONS,
     DIAGNOSTICS,
+    HISTORY,
 }
 
 internal fun isHomeRoot(screen: AppScreen): Boolean = screen == AppScreen.HOME
@@ -21,6 +22,7 @@ internal fun appScreenBackDestination(
     AppScreen.HOME -> null
     AppScreen.LOGIN,
     AppScreen.SETTINGS,
+    AppScreen.HISTORY,
     -> AppScreen.HOME
     AppScreen.DEVELOPER_OPTIONS -> if (developerModeEnabled) AppScreen.SETTINGS else AppScreen.HOME
     AppScreen.DIAGNOSTICS -> if (developerModeEnabled) AppScreen.DEVELOPER_OPTIONS else AppScreen.HOME

@@ -5,6 +5,16 @@ import org.json.JSONObject
 import java.time.Instant
 import java.time.LocalDate
 
+/** A reading of the 1.1 forecast history; only read now to migrate old data into [UsageLedger]. */
+data class UsageObservation(
+    val scope: String,
+    val totalBytes: Long?,
+    val remainingBytes: Long,
+    val fetchedAt: Instant,
+    val cycleStart: LocalDate?,
+    val resetDate: LocalDate?,
+)
+
 /** Stores only counters, dates and an opaque line fingerprint, never login/session information. */
 object UsageHistoryCodec {
     fun encode(history: List<UsageObservation>): String = JSONArray().apply {

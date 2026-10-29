@@ -91,6 +91,7 @@ import com.datapeek.ui.developerToolAccess
 import com.datapeek.ui.FreetOAuthPocCoordinator
 import com.datapeek.ui.FreetWebViewIssue
 import com.datapeek.ui.HomeScreen
+import com.datapeek.ui.UsageHistoryScreen
 import com.datapeek.ui.SettingsScreen
 import com.datapeek.ui.DeveloperOptionsScreen
 import com.datapeek.ui.DataPeekTheme
@@ -471,6 +472,12 @@ private fun DataPeekApp(
                         navigateTo(AppScreen.LOGIN)
                     },
                     onSettings = { navigateTo(AppScreen.SETTINGS) },
+                    onHistory = { navigateTo(AppScreen.HISTORY) },
+                )
+                AppScreen.HISTORY -> UsageHistoryScreen(
+                    state = state,
+                    onBack = { navigateTo(AppScreen.HOME) },
+                    onOpenSettings = { navigateTo(AppScreen.SETTINGS) },
                 )
                 AppScreen.LOGIN -> LoginScreen(
                     carrier = state.carrier,
@@ -505,6 +512,8 @@ private fun DataPeekApp(
                     onAutoRefreshChanged = viewModel::setAutoRefreshEnabled,
                     onOpenDeveloperOptions = { navigateTo(AppScreen.DEVELOPER_OPTIONS) },
                     onDeveloperModeChanged = viewModel::setDeveloperModeEnabled,
+                    onResetDayChanged = viewModel::setResetDay,
+                    onClearHistory = viewModel::clearUsageHistory,
                 )
                 AppScreen.DEVELOPER_OPTIONS -> if (developerAccess.developerOptionsVisible) {
                     DeveloperOptionsScreen(
@@ -540,6 +549,8 @@ private fun DataPeekApp(
                         onAutoRefreshChanged = viewModel::setAutoRefreshEnabled,
                         onOpenDeveloperOptions = { navigateTo(AppScreen.DEVELOPER_OPTIONS) },
                         onDeveloperModeChanged = viewModel::setDeveloperModeEnabled,
+                    onResetDayChanged = viewModel::setResetDay,
+                    onClearHistory = viewModel::clearUsageHistory,
                     )
                 }
                 AppScreen.DIAGNOSTICS -> if (developerAccess.diagnosticsVisible) {
@@ -566,6 +577,8 @@ private fun DataPeekApp(
                         onAutoRefreshChanged = viewModel::setAutoRefreshEnabled,
                         onOpenDeveloperOptions = { navigateTo(AppScreen.DEVELOPER_OPTIONS) },
                         onDeveloperModeChanged = viewModel::setDeveloperModeEnabled,
+                    onResetDayChanged = viewModel::setResetDay,
+                    onClearHistory = viewModel::clearUsageHistory,
                     )
                 }
             }

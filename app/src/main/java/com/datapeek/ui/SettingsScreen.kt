@@ -1,6 +1,8 @@
 package com.datapeek.ui
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.*
@@ -17,8 +19,11 @@ internal fun SettingsScreen(
     state: HomeUiState, onBack: () -> Unit, onLogout: () -> Unit, onLogin: () -> Unit,
     onIntervalChanged: (Long) -> Unit, onAutoRefreshChanged: (Boolean) -> Unit,
     onOpenDeveloperOptions: () -> Unit, onDeveloperModeChanged: (Boolean) -> Unit,
+    onResetDayChanged: (Int) -> Unit, onClearHistory: () -> Unit,
 ) {
     var showIntervals by rememberSaveable { mutableStateOf(false) }
+    var showResetDays by rememberSaveable { mutableStateOf(false) }
+    var showClearHistory by rememberSaveable { mutableStateOf(false) }
     var versionTapCount by rememberSaveable { mutableIntStateOf(0) }
     var developerMessage by rememberSaveable { mutableStateOf<String?>(null) }
     LaunchedEffect(state.developerModeEnabled) { versionTapCount = 0; developerMessage = null }
@@ -45,6 +50,16 @@ internal fun SettingsScreen(
         Text("백그라운드에서는 갱신 필요 여부를 표시하고, 통신사 사용량은 앱을 열 때 조회해요. Android 절전 정책에 따라 갱신 시각이 달라질 수 있어요.",
             modifier = Modifier.padding(horizontal = 20.dp), style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant)
+        OneUiSectionTitle("사용 기록")
+        OneUiGroup {
+            OneUiSettingRow("데이터 초기화일", summary = resetDayLabel(state), onClick = { showResetDays = true })
+            OneUiDivider()
+            OneUiSettingRow("사용 기록 삭제", summary = "저장된 일별 사용 기록과 소진 예측을 지워요",
+                onClick = { showClearHistory = true })
+        }
+        Text("통신사가 초기화일을 알려주지 않으면 매월 1일(달력 기준)로 계산해요. 실제 초기화일이 다르면 직접 지정해 주세요.",
+            modifier = Modifier.padding(horizontal = 20.dp), style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant)
         OneUiSectionTitle("앱 정보")
         OneUiGroup {
             OneUiSettingRow("DataPeek", summary = "버전 ${BuildConfig.VERSION_NAME}", onClick = {
@@ -63,6 +78,38 @@ internal fun SettingsScreen(
         Text("비밀번호와 인증 쿠키는 공식 로그인 화면에서 관리돼요.",
             modifier = Modifier.padding(horizontal = 20.dp), style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+    if (showResetDays) {
+        AlertDialog(
+            onDismissRequest = { showResetDays = false }, title = { Text("데이터 초기화일") },
+            text = {
+                Column(Modifier.selectableGroup().verticalScroll(rememberScrollState())) {
+                    (0..31).forEach { day ->
+                        val label = when (day) {
+                            0 -> "자동 (통신사 정보, 없으면 매월 1일)"
+                            31 -> "매월 말일"
+                            else -> "매월 ${day}일"
+                        }
+                        Row(Modifier.fillMaxWidth().heightIn(min = 56.dp).selectable(
+                            selected = state.resetDaySetting == day,
+                            role = Role.RadioButton, onClick = { onResetDayChanged(day); showResetDays = false },
+                        ), verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                            RadioButton(selected = state.resetDaySetting == day, onClick = null)
+                            Text(label, style = MaterialTheme.typography.bodyLarge)
+                        }
+                    }
+                }
+            }, confirmButton = { TextButton(onClick = { showResetDays = false }) { Text("취소") } },
+        )
+    }
+    if (showClearHistory) {
+        AlertDialog(
+            onDismissRequest = { showClearHistory = false }, title = { Text("사용 기록을 삭제할까요?") },
+            text = { Text("저장된 일별 사용 기록이 모두 지워지고, 새로 조회할 때부터 다시 쌓여요. 되돌릴 수 없어요.") },
+            confirmButton = { TextButton(onClick = { onClearHistory(); showClearHistory = false }) { Text("삭제") } },
+            dismissButton = { TextButton(onClick = { showClearHistory = false }) { Text("취소") } },
+        )
     }
     if (showIntervals) {
         AlertDialog(
